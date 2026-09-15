@@ -331,7 +331,8 @@
 
 <nav>
   <div class="nav-logo">PriceLabs <span>RM Agent</span></div>
-  <a href="#decisions" class="active">Open decisions</a>
+  <a href="#architecture" class="active">Architecture</a>
+  <a href="#decisions">Open decisions</a>
   <a href="#flowchart">Flowchart</a>
   <a href="#api">API & data</a>
   <a href="#templates">Templates</a>
@@ -357,9 +358,59 @@
 
 <div id="ai-answers">
 
-<!-- ══════════════ SECTION 1: OPEN DECISIONS ══════════════ -->
-<section id="decisions">
+<!-- ══════════════ SECTION 1: ARCHITECTURE ══════════════ -->
+<section id="architecture">
   <div class="section-eyebrow">Section 1</div>
+  <h2>Architecture & guardrail</h2>
+  <p class="section-desc">The system is split into two layers with a hard contract between them. The LLM never calculates, infers, or selects the verdict — it strictly populates preset templates from deterministic engine outputs.</p>
+
+  <div class="arch-grid">
+    <div class="arch-card engine">
+      <h4>⚙ Deterministic engine</h4>
+      <ul>
+        <li>Fetch pacing data via masq (read-only)</li>
+        <li>Compute signed <code>gap_pp</code></li>
+        <li>Apply threshold bands</li>
+        <li>Run aggregate-signal override</li>
+        <li>Assign confidence level</li>
+        <li>Select <code>template_id</code> + <code>next_step_id</code></li>
+        <li>Emit <code>VerdictPayload</code></li>
+      </ul>
+    </div>
+    <div class="arch-card narrator">
+      <h4>✦ LLM narrator</h4>
+      <ul>
+        <li>Receives only the <code>VerdictPayload</code></li>
+        <li>Fills template slots verbatim</li>
+        <li>Copies numbers from <code>rendered_values</code></li>
+        <li>Never formats a number</li>
+        <li>Never invents a next step</li>
+        <li>Never receives raw pacing arrays</li>
+        <li>Temperature = 0, max_tokens = 400</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Contract rules — enforced in code, not prompts</h3>
+  <ol class="rules">
+    <li>The engine emits a <code>VerdictPayload</code>. The LLM receives <strong>only</strong> that payload — never raw pacing arrays.</li>
+    <li><code>template_id</code> is chosen by the engine. The LLM renders the template it is given.</li>
+    <li>Every number must be present verbatim in the payload as a pre-formatted string (<code>"52%"</code>, <code>"16 percentage points"</code>). The LLM copies, never formats.</li>
+    <li><strong>Post-generation validator:</strong> regex-extract every numeric token from LLM output and assert set-membership in <code>rendered_values</code>. Any token not found → discard, emit <code>fallback_text</code>, log <code>NARRATION_DRIFT</code>.</li>
+    <li>The engine is independently testable. The eval scorecard scores the engine, not the prose. Consistency is structurally guaranteed for verdict and confidence.</li>
+  </ol>
+
+  <div class="callout warn">
+    <div class="callout-title">Why this matters for the demo</div>
+    <p>The refusal case (Scenario 5) only lands if the audience believes the agent <em>cannot</em> be talked into a verdict. A model that decides is a model that can be persuaded. A rules engine cannot.</p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 2: OPEN DECISIONS ══════════════ -->
+<section id="decisions">
+  <div class="section-eyebrow">Section 2</div>
   <h2>Resolutions for the 3 open decisions</h2>
   <p class="section-desc">All three blocking items from the hackathon plan are now locked. These replace the original unsigned, overlapping bands.</p>
 
@@ -465,7 +516,7 @@
 
 <!-- ══════════════ SECTION 3: FLOWCHART ══════════════ -->
 <section id="flowchart">
-  <div class="section-eyebrow">Section 2</div>
+  <div class="section-eyebrow">Section 3</div>
   <h2>Deterministic logic flowchart</h2>
   <p class="section-desc">Step-by-step logic from trigger to verdict. Pre-flight checks fail fast — first match wins.</p>
 
@@ -687,7 +738,7 @@
 
 <!-- ══════════════ SECTION 4: API & DATA ══════════════ -->
 <section id="api">
-  <div class="section-eyebrow">Section 3</div>
+  <div class="section-eyebrow">Section 4</div>
   <h2>Developer API &amp; data requirements</h2>
   <p class="section-desc">All reads are read-only via masq. Map each row to the concrete PriceLabs MCP tool name in build hour 1.</p>
 
@@ -748,7 +799,7 @@
 
 <!-- ══════════════ SECTION 5: TEMPLATES ══════════════ -->
 <section id="templates">
-  <div class="section-eyebrow">Section 4</div>
+  <div class="section-eyebrow">Section 5</div>
   <h2>System prompt &amp; narration templates</h2>
   <p class="section-desc">Blue tokens are slots filled from <code>rendered_values</code>. The LLM copies them verbatim — it never formats or computes them.</p>
 
@@ -890,7 +941,7 @@ Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span clas
 
 <!-- ══════════════ SECTION 6: SCORECARD ══════════════ -->
 <section id="scorecard">
-  <div class="section-eyebrow">Section 5</div>
+  <div class="section-eyebrow">Section 6</div>
   <h2>Scorecard mapping &amp; build notes</h2>
   <p class="section-desc">All 8 eval scenarios mapped to expected engine paths. Scenarios 7 and 8 are now unblocked.</p>
 
