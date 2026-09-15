@@ -351,16 +351,18 @@
   <p>Revanth will update it.</p>
 </div>
 
-<!-- ══════════════ SECTION 2: OPEN DECISIONS ══════════════ -->
+<div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:8px">
+  <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
+</div>
+
+<div id="ai-answers">
+
+<!-- ══════════════ SECTION 1: OPEN DECISIONS ══════════════ -->
 <section id="decisions">
-  <div class="section-eyebrow">Section 2</div>
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px">
-    <h2 style="margin-bottom:0">Resolutions for the 3 open decisions</h2>
-    <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
-  </div>
+  <div class="section-eyebrow">Section 1</div>
+  <h2>Resolutions for the 3 open decisions</h2>
   <p class="section-desc">All three blocking items from the hackathon plan are now locked. These replace the original unsigned, overlapping bands.</p>
 
-  <div id="ai-answers">
   <h3>Decision #1 — Signed gap &amp; verdict logic</h3>
   <p>Gap is signed. Bands are half-open, mutually exclusive, compared on values rounded to 1dp before banding (round-half-away-from-zero).</p>
 
@@ -457,14 +459,13 @@
   </div>
 
   <p><strong>Mandatory breakdown</strong> in every group output: per-listing table sorted by <code>weight_i × |gap_pp|</code> (largest revenue exposure first), capped at 10 rows. For GROUP_MIXED, the breakdown <em>is</em> the answer. Scenarios 7 and 8 are now unblocked.</p>
-  </div><!-- /ai-answers -->
 </section>
 
 <hr>
 
 <!-- ══════════════ SECTION 3: FLOWCHART ══════════════ -->
 <section id="flowchart">
-  <div class="section-eyebrow">Section 3</div>
+  <div class="section-eyebrow">Section 2</div>
   <h2>Deterministic logic flowchart</h2>
   <p class="section-desc">Step-by-step logic from trigger to verdict. Pre-flight checks fail fast — first match wins.</p>
 
@@ -686,7 +687,7 @@
 
 <!-- ══════════════ SECTION 4: API & DATA ══════════════ -->
 <section id="api">
-  <div class="section-eyebrow">Section 4</div>
+  <div class="section-eyebrow">Section 3</div>
   <h2>Developer API &amp; data requirements</h2>
   <p class="section-desc">All reads are read-only via masq. Map each row to the concrete PriceLabs MCP tool name in build hour 1.</p>
 
@@ -747,7 +748,7 @@
 
 <!-- ══════════════ SECTION 5: TEMPLATES ══════════════ -->
 <section id="templates">
-  <div class="section-eyebrow">Section 5</div>
+  <div class="section-eyebrow">Section 4</div>
   <h2>System prompt &amp; narration templates</h2>
   <p class="section-desc">Blue tokens are slots filled from <code>rendered_values</code>. The LLM copies them verbatim — it never formats or computes them.</p>
 
@@ -889,7 +890,7 @@ Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span clas
 
 <!-- ══════════════ SECTION 6: SCORECARD ══════════════ -->
 <section id="scorecard">
-  <div class="section-eyebrow">Section 6</div>
+  <div class="section-eyebrow">Section 5</div>
   <h2>Scorecard mapping &amp; build notes</h2>
   <p class="section-desc">All 8 eval scenarios mapped to expected engine paths. Scenarios 7 and 8 are now unblocked.</p>
 
@@ -996,6 +997,8 @@ Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span clas
   </div>
 
 </section>
+
+</div><!-- /ai-answers -->
 
 </div><!-- /page -->
 
