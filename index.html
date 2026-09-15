@@ -352,18 +352,16 @@
   <p>Revanth will update it.</p>
 </div>
 
-<div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:8px">
-  <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
-</div>
-
-<div id="ai-answers">
-
 <!-- ══════════════ SECTION 1: ARCHITECTURE ══════════════ -->
 <section id="architecture">
   <div class="section-eyebrow">Section 1</div>
-  <h2>Architecture & guardrail</h2>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px">
+    <h2 style="margin-bottom:0">Architecture & guardrail</h2>
+    <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
+  </div>
   <p class="section-desc">The system is split into two layers with a hard contract between them. The LLM never calculates, infers, or selects the verdict — it strictly populates preset templates from deterministic engine outputs.</p>
 
+  <div id="ai-answers">
   <div class="arch-grid">
     <div class="arch-card engine">
       <h4>⚙ Deterministic engine</h4>
@@ -404,6 +402,7 @@
     <div class="callout-title">Why this matters for the demo</div>
     <p>The refusal case (Scenario 5) only lands if the audience believes the agent <em>cannot</em> be talked into a verdict. A model that decides is a model that can be persuaded. A rules engine cannot.</p>
   </div>
+  </div><!-- /ai-answers -->
 </section>
 
 <hr>
@@ -1048,8 +1047,6 @@ Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span clas
   </div>
 
 </section>
-
-</div><!-- /ai-answers -->
 
 </div><!-- /page -->
 
