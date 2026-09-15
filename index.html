@@ -331,8 +331,7 @@
 
 <nav>
   <div class="nav-logo">PriceLabs <span>RM Agent</span></div>
-  <a href="#architecture" class="active">Architecture</a>
-  <a href="#decisions">Open decisions</a>
+  <a href="#decisions" class="active">Open decisions</a>
   <a href="#flowchart">Flowchart</a>
   <a href="#api">API & data</a>
   <a href="#templates">Templates</a>
@@ -343,72 +342,25 @@
   <div class="hero-tag">Hackathon 2026 · Engineering Spec v1.0</div>
   <h1>Is this me,<br>or the market?</h1>
   <p class="hero-sub">A deterministic pacing-comparison agent that tells a host whether their booking slump is a listing problem or a market problem — with a confidence score attached to the verdict, not buried under it.</p>
-  <div class="meta-row">
-    <span class="badge badge-green">Developer-ready</span>
-    <span class="badge badge-blue">Build: Sept 15–17, 2026</span>
-    <span class="badge badge-gray">Owner: Shail</span>
-    <span class="badge badge-amber">masq · read-only · MCP only</span>
-  </div>
 </div>
 
 <div class="page">
 
-<!-- ══════════════ SECTION 1: ARCHITECTURE ══════════════ -->
-<section id="architecture">
-  <div class="section-eyebrow">Section 1</div>
-  <h2>Architecture & guardrail</h2>
-  <p class="section-desc">The system is split into two layers with a hard contract between them. The LLM never calculates, infers, or selects the verdict — it strictly populates preset templates from deterministic engine outputs.</p>
-
-  <div class="arch-grid">
-    <div class="arch-card engine">
-      <h4>⚙ Deterministic engine</h4>
-      <ul>
-        <li>Fetch pacing data via masq (read-only)</li>
-        <li>Compute signed <code>gap_pp</code></li>
-        <li>Apply threshold bands</li>
-        <li>Run aggregate-signal override</li>
-        <li>Assign confidence level</li>
-        <li>Select <code>template_id</code> + <code>next_step_id</code></li>
-        <li>Emit <code>VerdictPayload</code></li>
-      </ul>
-    </div>
-    <div class="arch-card narrator">
-      <h4>✦ LLM narrator</h4>
-      <ul>
-        <li>Receives only the <code>VerdictPayload</code></li>
-        <li>Fills template slots verbatim</li>
-        <li>Copies numbers from <code>rendered_values</code></li>
-        <li>Never formats a number</li>
-        <li>Never invents a next step</li>
-        <li>Never receives raw pacing arrays</li>
-        <li>Temperature = 0, max_tokens = 400</li>
-      </ul>
-    </div>
-  </div>
-
-  <h3>Contract rules — enforced in code, not prompts</h3>
-  <ol class="rules">
-    <li>The engine emits a <code>VerdictPayload</code>. The LLM receives <strong>only</strong> that payload — never raw pacing arrays.</li>
-    <li><code>template_id</code> is chosen by the engine. The LLM renders the template it is given.</li>
-    <li>Every number must be present verbatim in the payload as a pre-formatted string (<code>"52%"</code>, <code>"16 percentage points"</code>). The LLM copies, never formats.</li>
-    <li><strong>Post-generation validator:</strong> regex-extract every numeric token from LLM output and assert set-membership in <code>rendered_values</code>. Any token not found → discard, emit <code>fallback_text</code>, log <code>NARRATION_DRIFT</code>.</li>
-    <li>The engine is independently testable. The eval scorecard scores the engine, not the prose. Consistency is structurally guaranteed for verdict and confidence.</li>
-  </ol>
-
-  <div class="callout warn">
-    <div class="callout-title">Why this matters for the demo</div>
-    <p>The refusal case (Scenario 5) only lands if the audience believes the agent <em>cannot</em> be talked into a verdict. A model that decides is a model that can be persuaded. A rules engine cannot.</p>
-  </div>
-</section>
-
-<hr>
+<div class="callout warn" style="margin-top:0">
+  <div class="callout-title">Architecture &amp; guardrails</div>
+  <p>Revanth will update it.</p>
+</div>
 
 <!-- ══════════════ SECTION 2: OPEN DECISIONS ══════════════ -->
 <section id="decisions">
   <div class="section-eyebrow">Section 2</div>
-  <h2>Resolutions for the 3 open decisions</h2>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px">
+    <h2 style="margin-bottom:0">Resolutions for the 3 open decisions</h2>
+    <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
+  </div>
   <p class="section-desc">All three blocking items from the hackathon plan are now locked. These replace the original unsigned, overlapping bands.</p>
 
+  <div id="ai-answers">
   <h3>Decision #1 — Signed gap &amp; verdict logic</h3>
   <p>Gap is signed. Bands are half-open, mutually exclusive, compared on values rounded to 1dp before banding (round-half-away-from-zero).</p>
 
@@ -505,6 +457,7 @@
   </div>
 
   <p><strong>Mandatory breakdown</strong> in every group output: per-listing table sorted by <code>weight_i × |gap_pp|</code> (largest revenue exposure first), capped at 10 rows. For GROUP_MIXED, the breakdown <em>is</em> the answer. Scenarios 7 and 8 are now unblocked.</p>
+  </div><!-- /ai-answers -->
 </section>
 
 <hr>
@@ -1057,6 +1010,14 @@ Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span clas
     });
   }, { rootMargin: '-30% 0px -60% 0px' });
   sections.forEach(s => io.observe(s));
+
+  const aiToggle = document.getElementById('ai-toggle');
+  const aiAnswers = document.getElementById('ai-answers');
+  aiToggle.addEventListener('click', () => {
+    const hidden = aiAnswers.hidden;
+    aiAnswers.hidden = !hidden;
+    aiToggle.textContent = hidden ? 'Courtesy of AI · Hide answers' : 'Courtesy of AI · Show answers';
+  });
 </script>
 
 </body>
