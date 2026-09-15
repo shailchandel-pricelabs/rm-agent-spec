@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is this me, or the market? — Agent Spec</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161922;
+    --bg3: #1d2130;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8eaf0;
+    --text2: #8b90a0;
+    --text3: #5a5f70;
+    --accent: #5b8def;
+    --accent-dim: rgba(91,141,239,0.12);
+    --green: #3ecf8e;
+    --green-dim: rgba(62,207,142,0.12);
+    --amber: #f6a623;
+    --amber-dim: rgba(246,166,35,0.12);
+    --red: #e05a5a;
+    --red-dim: rgba(224,90,90,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,17,23,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-logo {
+    font-size: 13px; font-weight: 500; color: var(--text2);
+    white-space: nowrap; padding: 14px 24px 14px 0; border-right: 1px solid var(--border);
+    margin-right: 12px; flex-shrink: 0;
+  }
+  .nav-logo span { color: var(--accent); }
+  nav a {
+    font-size: 13px; color: var(--text2); text-decoration: none;
+    padding: 16px 14px; white-space: nowrap; border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  nav a:hover { color: var(--text); }
+  nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 32px 60px;
+    max-width: 900px; margin: 0 auto;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; font-family: var(--mono);
+    color: var(--accent); background: var(--accent-dim);
+    border: 1px solid rgba(91,141,239,0.2);
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 24px;
+  }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  h1 {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 600; line-height: 1.15;
+    letter-spacing: -0.02em; margin-bottom: 18px;
+    background: linear-gradient(135deg, #e8eaf0 30%, #5b8def);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub {
+    font-size: 16px; color: var(--text2); max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 500; font-family: var(--mono);
+    padding: 3px 10px; border-radius: 6px; border: 1px solid;
+  }
+  .badge-blue { color: var(--accent); background: var(--accent-dim); border-color: rgba(91,141,239,0.2); }
+  .badge-green { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.2); }
+  .badge-amber { color: var(--amber); background: var(--amber-dim); border-color: rgba(246,166,35,0.2); }
+  .badge-red { color: var(--red); background: var(--red-dim); border-color: rgba(224,90,90,0.2); }
+  .badge-purple { color: var(--purple); background: var(--purple-dim); border-color: rgba(167,139,250,0.2); }
+  .badge-gray { color: var(--text2); background: rgba(255,255,255,0.05); border-color: var(--border2); }
+
+  /* ── MAIN LAYOUT ── */
+  .page { max-width: 900px; margin: 0 auto; padding: 0 32px 80px; }
+
+  /* ── SECTIONS ── */
+  section { padding-top: 64px; }
+  .section-eyebrow {
+    font-size: 11px; font-weight: 500; font-family: var(--mono);
+    color: var(--text3); text-transform: uppercase; letter-spacing: .1em;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
+    margin-bottom: 8px; line-height: 1.3;
+  }
+  .section-desc { color: var(--text2); margin-bottom: 28px; max-width: 680px; }
+  h3 { font-size: 15px; font-weight: 600; margin: 28px 0 12px; color: var(--text); }
+  p { color: var(--text2); margin-bottom: 12px; }
+  strong { color: var(--text); font-weight: 600; }
+  code {
+    font-family: var(--mono); font-size: 12px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    padding: 1px 6px; border-radius: 4px; color: var(--accent);
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 10px; border: 1px solid var(--border2); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: var(--bg3); }
+  th {
+    text-align: left; padding: 10px 16px;
+    font-size: 11px; font-weight: 500; font-family: var(--mono);
+    color: var(--text3); text-transform: uppercase; letter-spacing: .06em;
+    border-bottom: 1px solid var(--border2); white-space: nowrap;
+  }
+  td {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    color: var(--text2); vertical-align: top; line-height: 1.55;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(255,255,255,0.02); }
+  td code { font-size: 11px; }
+
+  /* ── VERDICT PILLS ── */
+  .vp {
+    display: inline-block; font-size: 11px; font-weight: 500; font-family: var(--mono);
+    padding: 2px 8px; border-radius: 20px; white-space: nowrap; border: 1px solid;
+  }
+  .vp-red { color: var(--red); background: var(--red-dim); border-color: rgba(224,90,90,0.25); }
+  .vp-amber { color: var(--amber); background: var(--amber-dim); border-color: rgba(246,166,35,0.25); }
+  .vp-green { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.25); }
+  .vp-blue { color: var(--accent); background: var(--accent-dim); border-color: rgba(91,141,239,0.25); }
+  .vp-gray { color: var(--text2); background: rgba(255,255,255,0.05); border-color: var(--border2); }
+
+  /* ── CONF PILLS ── */
+  .cp {
+    display: inline-block; font-size: 11px; font-weight: 500; font-family: var(--mono);
+    padding: 2px 8px; border-radius: 20px; border: 1px solid; white-space: nowrap;
+  }
+  .cp-high { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.25); }
+  .cp-med { color: var(--amber); background: var(--amber-dim); border-color: rgba(246,166,35,0.25); }
+  .cp-low { color: var(--red); background: var(--red-dim); border-color: rgba(224,90,90,0.25); }
+
+  /* ── GAP TABLE (special) ── */
+  .gap-table {
+    border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; margin: 16px 0;
+  }
+  .gap-row {
+    display: grid; grid-template-columns: 220px 1fr 1fr;
+    gap: 0; padding: 11px 16px; border-bottom: 1px solid var(--border);
+    font-size: 13px; align-items: center;
+  }
+  .gap-row:last-child { border-bottom: none; }
+  .gap-row.header {
+    background: var(--bg3);
+    font-size: 11px; font-weight: 500; font-family: var(--mono);
+    color: var(--text3); text-transform: uppercase; letter-spacing: .06em;
+  }
+  .gap-code { font-family: var(--mono); font-size: 12px; color: var(--text); }
+  .gap-action { color: var(--text2); font-size: 13px; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: 10px; padding: 14px 18px; margin: 20px 0;
+    font-size: 13px; line-height: 1.65; border: 1px solid;
+  }
+  .callout-title { font-weight: 600; font-size: 13px; margin-bottom: 5px; }
+  .callout.info { background: var(--accent-dim); border-color: rgba(91,141,239,0.2); }
+  .callout.info .callout-title { color: var(--accent); }
+  .callout.warn { background: var(--amber-dim); border-color: rgba(246,166,35,0.2); }
+  .callout.warn .callout-title { color: var(--amber); }
+  .callout.danger { background: var(--red-dim); border-color: rgba(224,90,90,0.2); }
+  .callout.danger .callout-title { color: var(--red); }
+  .callout p { color: var(--text2); margin: 0; font-size: 13px; }
+
+  /* ── FLOWCHART ── */
+  .flowchart-wrap {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 32px 24px; margin: 20px 0;
+    overflow-x: auto;
+  }
+  .fc { position: relative; }
+
+  /* nodes */
+  .fc-node {
+    position: absolute;
+    border-radius: 8px;
+    font-size: 11px; font-family: var(--mono);
+    font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; line-height: 1.35;
+    cursor: default;
+  }
+  .fc-node.trigger {
+    background: var(--purple-dim); border: 1px solid rgba(167,139,250,0.3);
+    color: var(--purple);
+  }
+  .fc-node.action {
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text);
+  }
+  .fc-node.decision {
+    background: var(--accent-dim); border: 1px solid rgba(91,141,239,0.3);
+    color: var(--accent); border-radius: 6px; transform: rotate(45deg);
+  }
+  .fc-node.decision .inner { transform: rotate(-45deg); font-size: 10px; }
+  .fc-node.refuse {
+    background: var(--red-dim); border: 1px solid rgba(224,90,90,0.3);
+    color: var(--red);
+  }
+  .fc-node.verdict-listing { background: var(--red-dim); border: 1px solid rgba(224,90,90,0.3); color: var(--red); }
+  .fc-node.verdict-mixed { background: var(--amber-dim); border: 1px solid rgba(246,166,35,0.3); color: var(--amber); }
+  .fc-node.verdict-market { background: var(--green-dim); border: 1px solid rgba(62,207,142,0.3); color: var(--green); }
+  .fc-node.verdict-out { background: var(--accent-dim); border: 1px solid rgba(91,141,239,0.3); color: var(--accent); }
+  .fc-node.emit {
+    background: var(--purple-dim); border: 1px solid rgba(167,139,250,0.3);
+    color: var(--purple);
+  }
+  .fc-node.override {
+    background: var(--amber-dim); border: 1px solid rgba(246,166,35,0.3);
+    color: var(--amber);
+  }
+
+  /* SVG flowchart */
+  .svg-fc {
+    display: block; width: 100%; min-width: 700px;
+  }
+
+  /* ── CONFIG GRID ── */
+  .config-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px; margin: 16px 0;
+  }
+  .config-item {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 10px 14px;
+  }
+  .config-key { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .config-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--accent); }
+
+  /* ── TEMPLATE BLOCKS ── */
+  .template-block {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 10px; overflow: hidden; margin: 16px 0;
+  }
+  .template-header {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; background: var(--bg3);
+  }
+  .template-label { font-size: 12px; font-weight: 600; }
+  .template-body {
+    padding: 18px 20px; font-family: var(--mono); font-size: 12px;
+    line-height: 1.8; color: var(--text2); white-space: pre-wrap;
+  }
+  .slot { color: var(--accent); }
+  .comment { color: var(--text3); }
+
+  /* ── ASSUMPTION LIST ── */
+  .assumption {
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .assumption:last-child { border-bottom: none; }
+  .assumption-num {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    color: var(--text3); padding-top: 2px;
+  }
+  .assumption-text { color: var(--text2); line-height: 1.65; }
+
+  /* ── SCORECARD ── */
+  .sc-status {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .sc-blocked { background: var(--red-dim); color: var(--red); }
+  .sc-ready { background: var(--green-dim); color: var(--green); }
+
+  /* ── ARCH CARDS ── */
+  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+  .arch-card {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 20px;
+  }
+  .arch-card.engine { border-top: 2px solid var(--accent); }
+  .arch-card.narrator { border-top: 2px solid var(--purple); }
+  .arch-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .arch-card.engine h4 { color: var(--accent); }
+  .arch-card.narrator h4 { color: var(--purple); }
+  .arch-card ul { padding-left: 16px; }
+  .arch-card li { font-size: 13px; color: var(--text2); margin-bottom: 5px; line-height: 1.55; }
+
+  ol.rules { padding-left: 20px; }
+  ol.rules li { font-size: 14px; color: var(--text2); margin-bottom: 8px; line-height: 1.65; }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 16px; }
+    .hero, .page { padding-left: 16px; padding-right: 16px; }
+    .arch-grid { grid-template-columns: 1fr; }
+    .gap-row { grid-template-columns: 160px 1fr; }
+    .gap-row .gap-action { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">PriceLabs <span>RM Agent</span></div>
+  <a href="#architecture" class="active">Architecture</a>
+  <a href="#decisions">Open decisions</a>
+  <a href="#flowchart">Flowchart</a>
+  <a href="#api">API & data</a>
+  <a href="#templates">Templates</a>
+  <a href="#scorecard">Scorecard</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Hackathon 2026 · Engineering Spec v1.0</div>
+  <h1>Is this me,<br>or the market?</h1>
+  <p class="hero-sub">A deterministic pacing-comparison agent that tells a host whether their booking slump is a listing problem or a market problem — with a confidence score attached to the verdict, not buried under it.</p>
+  <div class="meta-row">
+    <span class="badge badge-green">Developer-ready</span>
+    <span class="badge badge-blue">Build: Sept 15–17, 2026</span>
+    <span class="badge badge-gray">Owner: Shail</span>
+    <span class="badge badge-amber">masq · read-only · MCP only</span>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══════════════ SECTION 1: ARCHITECTURE ══════════════ -->
+<section id="architecture">
+  <div class="section-eyebrow">Section 1</div>
+  <h2>Architecture & guardrail</h2>
+  <p class="section-desc">The system is split into two layers with a hard contract between them. The LLM never calculates, infers, or selects the verdict — it strictly populates preset templates from deterministic engine outputs.</p>
+
+  <div class="arch-grid">
+    <div class="arch-card engine">
+      <h4>⚙ Deterministic engine</h4>
+      <ul>
+        <li>Fetch pacing data via masq (read-only)</li>
+        <li>Compute signed <code>gap_pp</code></li>
+        <li>Apply threshold bands</li>
+        <li>Run aggregate-signal override</li>
+        <li>Assign confidence level</li>
+        <li>Select <code>template_id</code> + <code>next_step_id</code></li>
+        <li>Emit <code>VerdictPayload</code></li>
+      </ul>
+    </div>
+    <div class="arch-card narrator">
+      <h4>✦ LLM narrator</h4>
+      <ul>
+        <li>Receives only the <code>VerdictPayload</code></li>
+        <li>Fills template slots verbatim</li>
+        <li>Copies numbers from <code>rendered_values</code></li>
+        <li>Never formats a number</li>
+        <li>Never invents a next step</li>
+        <li>Never receives raw pacing arrays</li>
+        <li>Temperature = 0, max_tokens = 400</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Contract rules — enforced in code, not prompts</h3>
+  <ol class="rules">
+    <li>The engine emits a <code>VerdictPayload</code>. The LLM receives <strong>only</strong> that payload — never raw pacing arrays.</li>
+    <li><code>template_id</code> is chosen by the engine. The LLM renders the template it is given.</li>
+    <li>Every number must be present verbatim in the payload as a pre-formatted string (<code>"52%"</code>, <code>"16 percentage points"</code>). The LLM copies, never formats.</li>
+    <li><strong>Post-generation validator:</strong> regex-extract every numeric token from LLM output and assert set-membership in <code>rendered_values</code>. Any token not found → discard, emit <code>fallback_text</code>, log <code>NARRATION_DRIFT</code>.</li>
+    <li>The engine is independently testable. The eval scorecard scores the engine, not the prose. Consistency is structurally guaranteed for verdict and confidence.</li>
+  </ol>
+
+  <div class="callout warn">
+    <div class="callout-title">Why this matters for the demo</div>
+    <p>The refusal case (Scenario 5) only lands if the audience believes the agent <em>cannot</em> be talked into a verdict. A model that decides is a model that can be persuaded. A rules engine cannot.</p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 2: OPEN DECISIONS ══════════════ -->
+<section id="decisions">
+  <div class="section-eyebrow">Section 2</div>
+  <h2>Resolutions for the 3 open decisions</h2>
+  <p class="section-desc">All three blocking items from the hackathon plan are now locked. These replace the original unsigned, overlapping bands.</p>
+
+  <h3>Decision #1 — Signed gap &amp; verdict logic</h3>
+  <p>Gap is signed. Bands are half-open, mutually exclusive, compared on values rounded to 1dp before banding (round-half-away-from-zero).</p>
+
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 18px;margin:14px 0 20px;font-family:var(--mono);font-size:13px;color:var(--text2);">
+    gap_pp = listing_occupancy_pct − compset_avg_occupancy_pct
+  </div>
+
+  <div class="gap-table">
+    <div class="gap-row header">
+      <span>Signed gap (gap_pp)</span>
+      <span>Verdict code</span>
+      <span>Action implied</span>
+    </div>
+    <div class="gap-row">
+      <span class="gap-code">gap ≤ −10.0</span>
+      <span><span class="vp vp-red">LISTING_ISSUE</span></span>
+      <span class="gap-action">Yes — investigate the listing</span>
+    </div>
+    <div class="gap-row">
+      <span class="gap-code">−10.0 &lt; gap ≤ −5.0</span>
+      <span><span class="vp vp-amber">MIXED_LEANING_LISTING</span></span>
+      <span class="gap-action">Yes — soft recommendation</span>
+    </div>
+    <div class="gap-row">
+      <span class="gap-code">−5.0 &lt; gap &lt; +5.0</span>
+      <span><span class="vp vp-green">MARKET</span></span>
+      <span class="gap-action">Yes — market-level lever</span>
+    </div>
+    <div class="gap-row">
+      <span class="gap-code">gap ≥ +5.0</span>
+      <span><span class="vp vp-blue">OUTPERFORMING</span></span>
+      <span class="gap-action"><strong>No action</strong> — terminal branch</span>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Outperforming is a terminal branch</div>
+    <p>At <code>gap ≥ +5pp</code> the engine stops — no override check, no next step, <code>next_step_id = NONE</code>. The trigger question is "why are my bookings slow." A listing beating its comp set isn't slow. OUTPERFORMING is a pass on the scorecard, not a miss.</p>
+  </div>
+
+  <hr style="margin:36px 0">
+
+  <h3>Decision #2 — Aggregate-signal override rule</h3>
+  <p>Catches the shared-comp-set-problem case: headline gap says "listing issue," but the comp set is also down against its own history — the comparison baseline has collapsed.</p>
+
+  <div class="table-wrap" style="margin-bottom:16px">
+    <table>
+      <thead><tr><th>Variable</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><code>member_delta_i</code></td><td><code>member_pacing_i − member_historical_avg_i</code> (signed pp)</td></tr>
+        <tr><td><code>member_is_soft_i</code></td><td><code>member_delta_i &lt;= −5.0</code></td></tr>
+        <tr><td><code>soft_ratio</code></td><td><code>count(member_is_soft) / count(members_with_valid_baseline)</code></td></tr>
+        <tr><td><code>baseline_coverage</code></td><td><code>count(members_with_valid_baseline) / comp_set_size</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The override rule runs only when <code>verdict_code ∈ {LISTING_ISSUE, MIXED_LEANING_LISTING}</code>:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Condition</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Verdict is MARKET, OUTPERFORMING, or REFUSED</td><td>No-op — terminal branches never reach here</td></tr>
+        <tr><td><code>baseline_coverage &lt; 0.50</code></td><td>Downgrade confidence one step; keep verdict</td></tr>
+        <tr><td><code>soft_ratio &lt; 0.60</code></td><td>Headline stands — no override</td></tr>
+        <tr><td><code>soft_ratio ≥ 0.60</code> AND verdict is LISTING_ISSUE AND <code>gap &lt;= −15pp</code></td><td>Soften to <span class="vp vp-amber">MIXED_LEANING_LISTING</span>, cap confidence at MEDIUM</td></tr>
+        <tr><td><code>soft_ratio ≥ 0.60</code> AND verdict is LISTING_ISSUE AND <code>gap &gt; −15pp</code></td><td>Override to <span class="vp vp-green">MARKET_SHARED_SOFTNESS</span>, cap confidence at MEDIUM</td></tr>
+        <tr><td><code>soft_ratio ≥ 0.60</code> AND verdict is MIXED_LEANING_LISTING</td><td>Override to <span class="vp vp-green">MARKET_SHARED_SOFTNESS</span>, cap confidence at MEDIUM</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Override is strictly one-directional</div>
+    <p>The override can only move a verdict toward "market." It can never escalate a market call into a listing call. The confidence cap to MEDIUM applies only on the override path — scenarios 1–3 (no override fired) retain HIGH.</p>
+  </div>
+
+  <hr style="margin:36px 0">
+
+  <h3>Decision #3 — Single listing vs. group rollup</h3>
+  <p><strong>Per-listing evaluation, then composition-based rollup. Do not aggregate pacing first.</strong> Averaging pacing across the group hides a few bleeding listings inside a healthy group — the exact case the spec worries about.</p>
+
+  <div class="table-wrap" style="margin-bottom:16px">
+    <table>
+      <thead><tr><th>Problem share (exposure-weighted)</th><th>Group verdict</th></tr></thead>
+      <tbody>
+        <tr><td><code>share ≥ 0.60</code></td><td><span class="vp vp-red">GROUP_LISTING_ISSUE</span> — concentrated listing-side problem</td></tr>
+        <tr><td><code>0.25 ≤ share &lt; 0.60</code></td><td><span class="vp vp-amber">GROUP_MIXED</span> — Scenario 8: mixed portfolio</td></tr>
+        <tr><td><code>share &lt; 0.25</code></td><td><span class="vp vp-green">GROUP_MARKET</span> — healthy group in a soft market</td></tr>
+        <tr><td>Coverage gate: <code>eligible_weight / total_weight &lt; 0.60</code></td><td><span class="vp vp-gray">REFUSED_GROUP_COVERAGE</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Mandatory breakdown</strong> in every group output: per-listing table sorted by <code>weight_i × |gap_pp|</code> (largest revenue exposure first), capped at 10 rows. For GROUP_MIXED, the breakdown <em>is</em> the answer. Scenarios 7 and 8 are now unblocked.</p>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 3: FLOWCHART ══════════════ -->
+<section id="flowchart">
+  <div class="section-eyebrow">Section 3</div>
+  <h2>Deterministic logic flowchart</h2>
+  <p class="section-desc">Step-by-step logic from trigger to verdict. Pre-flight checks fail fast — first match wins.</p>
+
+  <h3>Single listing path</h3>
+  <div class="flowchart-wrap">
+    <svg class="svg-fc" viewBox="0 0 700 820" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#5a5f70" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#3ecf8e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#e05a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#f6a623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#5b8def" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- TRIGGER -->
+      <rect x="200" y="20" width="300" height="40" rx="8" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+      <text x="350" y="36" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="500">TRIGGER</text>
+      <text x="350" y="50" text-anchor="middle" fill="#a78bfa" font-size="10">"Why are bookings slow for [window]?"</text>
+
+      <!-- Arrow down -->
+      <line x1="350" y1="60" x2="350" y2="82" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+
+      <!-- PREFLIGHT CHECKS — stacked with refusals branching right -->
+
+      <!-- Check 1: Scope -->
+      <rect x="220" y="84" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
+      <text x="350" y="98" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #1</text>
+      <text x="350" y="112" text-anchor="middle" fill="#5b8def" font-size="10">Scope unambiguous?</text>
+      <!-- Refuse right -->
+      <line x1="480" y1="102" x2="540" y2="102" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="488" y="98" fill="#e05a5a" font-size="9">No</text>
+      <rect x="540" y="84" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
+      <text x="610" y="102" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">ASK_SCOPE</text>
+      <!-- Down arrow -->
+      <line x1="350" y1="120" x2="350" y2="142" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="358" y="134" fill="#3ecf8e" font-size="9">Yes</text>
+
+      <!-- Check 2: Comp set -->
+      <rect x="220" y="144" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
+      <text x="350" y="158" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #2</text>
+      <text x="350" y="172" text-anchor="middle" fill="#5b8def" font-size="10">Comp set defined?</text>
+      <line x1="480" y1="162" x2="540" y2="162" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="488" y="158" fill="#e05a5a" font-size="9">No</text>
+      <rect x="540" y="144" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
+      <text x="610" y="162" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_NO_COMPSET</text>
+      <line x1="350" y1="180" x2="350" y2="202" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="358" y="194" fill="#3ecf8e" font-size="9">Yes</text>
+
+      <!-- Check 3: Listing age -->
+      <rect x="220" y="204" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
+      <text x="350" y="218" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #3</text>
+      <text x="350" y="232" text-anchor="middle" fill="#5b8def" font-size="10">Listing age ≥ 90 days?</text>
+      <line x1="480" y1="222" x2="540" y2="222" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="488" y="218" fill="#e05a5a" font-size="9">No</text>
+      <rect x="540" y="204" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
+      <text x="610" y="222" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_NEW_LISTING</text>
+      <line x1="350" y1="240" x2="350" y2="262" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="358" y="254" fill="#3ecf8e" font-size="9">Yes</text>
+
+      <!-- Check 4: Comp set size -->
+      <rect x="220" y="264" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
+      <text x="350" y="278" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #4</text>
+      <text x="350" y="292" text-anchor="middle" fill="#5b8def" font-size="10">Comp set size ≥ 3?</text>
+      <line x1="480" y1="282" x2="540" y2="282" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="488" y="278" fill="#e05a5a" font-size="9">No</text>
+      <rect x="540" y="264" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
+      <text x="610" y="282" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_SMALL_COMPSET</text>
+      <line x1="350" y1="300" x2="350" y2="322" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="358" y="314" fill="#3ecf8e" font-size="9">Yes</text>
+
+      <!-- Check 5: Window -->
+      <rect x="220" y="324" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
+      <text x="350" y="338" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #5</text>
+      <text x="350" y="352" text-anchor="middle" fill="#5b8def" font-size="10">Window ≤ 180 days out?</text>
+      <line x1="480" y1="342" x2="540" y2="342" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
+      <text x="484" y="338" fill="#f6a623" font-size="9">No</text>
+      <rect x="540" y="324" width="140" height="36" rx="6" fill="rgba(246,166,35,0.1)" stroke="rgba(246,166,35,0.25)" stroke-width="1"/>
+      <text x="610" y="338" text-anchor="middle" fill="#f6a623" font-size="10" font-weight="500">far_window_caveat = true</text>
+      <text x="610" y="352" text-anchor="middle" fill="#f6a623" font-size="9">cap confidence MEDIUM</text>
+      <line x1="350" y1="360" x2="350" y2="382" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="358" y="374" fill="#3ecf8e" font-size="9">Yes</text>
+
+      <!-- READ DATA -->
+      <rect x="210" y="384" width="280" height="36" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="350" y="398" text-anchor="middle" fill="#e8eaf0" font-size="10" font-weight="500">READ pacing data</text>
+      <text x="350" y="412" text-anchor="middle" fill="#8b90a0" font-size="9">listing occ · comp set occ · ADR · baselines</text>
+      <line x1="480" y1="402" x2="540" y2="402" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="484" y="398" fill="#e05a5a" font-size="9">Fail</text>
+      <rect x="540" y="384" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
+      <text x="610" y="402" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_DATA_UNAVAIL</text>
+      <line x1="350" y1="420" x2="350" y2="442" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+
+      <!-- COMPUTE GAP -->
+      <rect x="220" y="444" width="260" height="36" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="350" y="458" text-anchor="middle" fill="#e8eaf0" font-size="10" font-weight="500">Compute gap_pp</text>
+      <text x="350" y="472" text-anchor="middle" fill="#8b90a0" font-size="9">listing_occ − compset_avg_occ (1dp, signed)</text>
+      <line x1="350" y1="480" x2="350" y2="500" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+
+      <!-- BAND SPLIT — 4 outcomes fanning out -->
+      <text x="350" y="510" text-anchor="middle" fill="#8b90a0" font-size="9">Band gap_pp</text>
+
+      <!-- gap >= +5 → OUTPERFORMING (far left) -->
+      <line x1="350" y1="512" x2="100" y2="512" stroke="#5b8def" stroke-width="1"/>
+      <line x1="100" y1="512" x2="100" y2="530" stroke="#5b8def" stroke-width="1" marker-end="url(#arr-b)"/>
+      <text x="185" y="509" fill="#5b8def" font-size="9">gap ≥ +5</text>
+      <rect x="20" y="530" width="160" height="44" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.3)" stroke-width="1"/>
+      <text x="100" y="547" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">OUTPERFORMING</text>
+      <text x="100" y="561" text-anchor="middle" fill="#5b8def" font-size="9">terminal · no next step</text>
+      <!-- OUTPERFORMING goes to emit -->
+      <line x1="100" y1="574" x2="100" y2="770" stroke="#5b8def" stroke-width="0.5" stroke-dasharray="3 3"/>
+      <line x1="100" y1="770" x2="248" y2="770" stroke="#5b8def" stroke-width="0.5" stroke-dasharray="3 3" marker-end="url(#arr-b)"/>
+
+      <!-- -5 < gap < +5 → MARKET (left-center) -->
+      <line x1="350" y1="512" x2="225" y2="512" stroke="#3ecf8e" stroke-width="1"/>
+      <line x1="225" y1="512" x2="225" y2="530" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-g)"/>
+      <text x="235" y="509" fill="#3ecf8e" font-size="9">−5 to +5</text>
+      <rect x="150" y="530" width="150" height="44" rx="6" fill="rgba(62,207,142,0.1)" stroke="rgba(62,207,142,0.3)" stroke-width="1"/>
+      <text x="225" y="547" text-anchor="middle" fill="#3ecf8e" font-size="10" font-weight="500">MARKET</text>
+      <text x="225" y="561" text-anchor="middle" fill="#3ecf8e" font-size="9">no override</text>
+      <!-- MARKET to confidence -->
+      <line x1="225" y1="574" x2="225" y2="648" stroke="#3ecf8e" stroke-width="0.5" stroke-dasharray="3 3"/>
+      <line x1="225" y1="648" x2="248" y2="648" stroke="#3ecf8e" stroke-width="0.5" stroke-dasharray="3 3" marker-end="url(#arr-g)"/>
+
+      <!-- -10 < gap <= -5 → MIXED (right-center) -->
+      <line x1="350" y1="512" x2="475" y2="512" stroke="#f6a623" stroke-width="1"/>
+      <line x1="475" y1="512" x2="475" y2="530" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
+      <text x="403" y="509" fill="#f6a623" font-size="9">−10 to −5</text>
+      <rect x="400" y="530" width="150" height="44" rx="6" fill="rgba(246,166,35,0.1)" stroke="rgba(246,166,35,0.3)" stroke-width="1"/>
+      <text x="475" y="547" text-anchor="middle" fill="#f6a623" font-size="10" font-weight="500">MIXED_LEANING</text>
+      <text x="475" y="561" text-anchor="middle" fill="#f6a623" font-size="9">→ run override</text>
+      <line x1="475" y1="574" x2="475" y2="600" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
+
+      <!-- gap <= -10 → LISTING_ISSUE (far right) -->
+      <line x1="350" y1="512" x2="600" y2="512" stroke="#e05a5a" stroke-width="1"/>
+      <line x1="600" y1="512" x2="600" y2="530" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="548" y="509" fill="#e05a5a" font-size="9">≤ −10</text>
+      <rect x="525" y="530" width="150" height="44" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.3)" stroke-width="1"/>
+      <text x="600" y="547" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">LISTING_ISSUE</text>
+      <text x="600" y="561" text-anchor="middle" fill="#e05a5a" font-size="9">→ run override</text>
+      <line x1="600" y1="574" x2="600" y2="590" stroke="#e05a5a" stroke-width="1"/>
+      <line x1="600" y1="590" x2="477" y2="590" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+
+      <!-- OVERRIDE box -->
+      <rect x="365" y="592" width="160" height="36" rx="6" fill="rgba(246,166,35,0.12)" stroke="rgba(246,166,35,0.3)" stroke-width="1"/>
+      <text x="445" y="606" text-anchor="middle" fill="#f6a623" font-size="10" font-weight="500">Aggregate-signal override</text>
+      <text x="445" y="620" text-anchor="middle" fill="#f6a623" font-size="9">§2.2 — one-directional</text>
+      <line x1="445" y1="628" x2="350" y2="648" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
+
+      <!-- CONFIDENCE box -->
+      <rect x="248" y="640" width="204" height="36" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="350" y="654" text-anchor="middle" fill="#e8eaf0" font-size="10" font-weight="500">Assign confidence</text>
+      <text x="350" y="668" text-anchor="middle" fill="#8b90a0" font-size="9">comp set size · match_quality · caps</text>
+      <line x1="350" y1="676" x2="350" y2="698" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+
+      <!-- CONFIDENCE == LOW? -->
+      <rect x="260" y="700" width="180" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
+      <text x="350" y="714" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Confidence == LOW?</text>
+      <text x="350" y="728" text-anchor="middle" fill="#5b8def" font-size="9">after all caps &amp; downgrades</text>
+      <line x1="440" y1="718" x2="500" y2="718" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
+      <text x="446" y="714" fill="#e05a5a" font-size="9">Yes</text>
+      <rect x="500" y="700" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
+      <text x="570" y="718" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_LOW_CONF</text>
+      <line x1="350" y1="736" x2="350" y2="758" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="358" y="750" fill="#3ecf8e" font-size="9">No</text>
+
+      <!-- EMIT -->
+      <rect x="220" y="760" width="260" height="40" rx="8" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+      <text x="350" y="776" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="500">Select template_id + next_step_id</text>
+      <text x="350" y="790" text-anchor="middle" fill="#a78bfa" font-size="10">Emit VerdictPayload → LLM Narrator</text>
+
+    </svg>
+  </div>
+
+  <h3>Pre-flight check order</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Check</th><th>Failure code</th><th>Why this order</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Scope unambiguous (single vs. group)</td><td><code>ASK_SCOPE</code></td><td>Wrong scope invalidates everything downstream</td></tr>
+        <tr><td>2</td><td>Comp set exists on the account</td><td><code>REFUSED_NO_COMPSET</code></td><td>Cheapest check; flag before anything runs</td></tr>
+        <tr><td>3</td><td>Listing age ≥ 90 days</td><td><code>REFUSED_NEW_LISTING</code></td><td>No pacing baseline exists</td></tr>
+        <tr><td>4</td><td>Comp set size ≥ 3</td><td><code>REFUSED_SMALL_COMPSET</code></td><td>Hard floor; agent refuses to force a verdict</td></tr>
+        <tr><td>5</td><td>Window start ≤ 180 days out</td><td>Caveat (not refusal)</td><td>Sets <code>far_window_caveat</code>, caps confidence at MEDIUM</td></tr>
+        <tr><td>6</td><td>All required reads returned</td><td><code>REFUSED_DATA_UNAVAILABLE</code></td><td>Distinct from a business-rule refusal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Confidence assignment</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Condition</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr><td>Comp set ≥ 5 AND <code>match_quality ≥ 0.70</code></td><td><span class="cp cp-high">HIGH</span></td></tr>
+        <tr><td>Comp set ≥ 5 AND <code>match_quality &lt; 0.70</code></td><td><span class="cp cp-med">MEDIUM</span></td></tr>
+        <tr><td>Comp set 3–4 listings</td><td><span class="cp cp-med">MEDIUM</span></td></tr>
+        <tr><td>Comp set &lt; 3 listings</td><td><span class="cp cp-low">LOW → refuse</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px">Apply caps in order: override cap (§2.2) → far-window cap → group coverage downgrade. LOW after any downgrade routes to <code>REFUSED_LOW_CONFIDENCE</code>.</p>
+
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 4: API & DATA ══════════════ -->
+<section id="api">
+  <div class="section-eyebrow">Section 4</div>
+  <h2>Developer API &amp; data requirements</h2>
+  <p class="section-desc">All reads are read-only via masq. Map each row to the concrete PriceLabs MCP tool name in build hour 1.</p>
+
+  <h3>MCP / masq reads</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Capability</th><th>Inputs</th><th>Returns</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>R1</td><td>Listing metadata</td><td><code>listing_id</code></td><td><code>created_at</code>, <code>name</code>, <code>market_id</code></td><td>Pre-flight #3</td></tr>
+        <tr><td>R2</td><td>Listing group membership</td><td><code>group_id</code></td><td><code>listing_id[]</code></td><td>Group scope</td></tr>
+        <tr><td>R3</td><td>Comp set definition</td><td><code>listing_id</code></td><td><code>comp_listing_id[]</code>, <code>match_quality</code></td><td>Pre-flight #2, #4, confidence</td></tr>
+        <tr><td>R4</td><td>Forward pacing — listing</td><td><code>listing_id</code>, window</td><td><code>occupancy_pct</code>, <code>available_nights</code></td><td><code>gap_pp</code>, <code>weight_i</code></td></tr>
+        <tr><td>R5</td><td>Forward pacing — comp members</td><td><code>comp_listing_id[]</code>, window</td><td>per-member <code>occupancy_pct</code></td><td>Comp set average, soft ratio</td></tr>
+        <tr><td style="color:var(--amber)">R6 ⚠</td><td>Historical baseline</td><td><code>listing_id[]</code>, <code>baseline_mode</code>, window</td><td><code>historical_avg_occupancy_pct</code>, <code>baseline_available</code></td><td>§2.2 override</td></tr>
+        <tr><td>R7</td><td>ADR — listing &amp; comp set</td><td><code>listing_id[]</code>, window</td><td><code>adr</code>, <code>currency</code></td><td>Supporting signal only</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">R6 is the largest schedule risk</div>
+    <p>Per-member historical baselines gate Decision #2 entirely. Confirm MCP availability in build hour 1. If R6 has no surface, the override degrades to a confidence downgrade — agent still ships, Scenario 1 gets weaker. Cache all reads 15 min; target latency &lt; 8s.</p>
+  </div>
+
+  <h3>Inputs</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>scope_type</code></td><td><code>"listing" | "group"</code></td><td>—</td><td>Must be explicit; else ASK_SCOPE</td></tr>
+        <tr><td><code>scope_id</code></td><td>string</td><td>—</td><td>listing_id or group_id</td></tr>
+        <tr><td><code>window_start</code></td><td>date</td><td>today + 1</td><td></td></tr>
+        <tr><td><code>window_end</code></td><td>date</td><td>today + 60</td><td></td></tr>
+        <tr><td><code>baseline_mode</code></td><td><code>"same_window_prior_year" | "trailing_equivalent"</code></td><td><code>same_window_prior_year</code></td><td>Falls back to trailing if prior year missing</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Computed variables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Formula</th></tr></thead>
+      <tbody>
+        <tr><td><code>compset_avg_occupancy_pct</code></td><td>Unweighted mean of member <code>occupancy_pct</code></td></tr>
+        <tr><td><code>gap_pp</code></td><td><code>listing_occupancy_pct − compset_avg_occupancy_pct</code>, rounded 1dp</td></tr>
+        <tr><td><code>member_delta_i</code></td><td><code>member_pacing_i − member_historical_avg_i</code></td></tr>
+        <tr><td><code>soft_ratio</code></td><td><code>count(member_delta_i ≤ −5.0) / count(baseline_available)</code></td></tr>
+        <tr><td><code>baseline_coverage</code></td><td><code>count(baseline_available) / comp_set_size</code></td></tr>
+        <tr><td><code>adr_delta_pct</code></td><td><code>(listing_adr − compset_median_adr) / compset_median_adr × 100</code>, 0dp</td></tr>
+        <tr><td><code>weight_i</code></td><td><code>available_nights_i</code> in window (exposure weighting)</td></tr>
+        <tr><td><code>problem_share</code></td><td>Σ weight_i (problem verdicts) / Σ weight_i (all eligible)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 5: TEMPLATES ══════════════ -->
+<section id="templates">
+  <div class="section-eyebrow">Section 5</div>
+  <h2>System prompt &amp; narration templates</h2>
+  <p class="section-desc">Blue tokens are slots filled from <code>rendered_values</code>. The LLM copies them verbatim — it never formats or computes them.</p>
+
+  <h3>Production system prompt</h3>
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:20px;font-family:var(--mono);font-size:12px;line-height:1.75;color:var(--text2);white-space:pre-wrap;margin:16px 0">You are the narration layer of the PriceLabs "Is this me, or the market?" agent.
+
+A deterministic rules engine has already performed the entire analysis. Your only
+job is to render the supplied VerdictPayload into the template named by
+payload.template_id, in clear plain English for a short-term-rental host.
+
+<span style="color:#e8eaf0;font-weight:600">ABSOLUTE CONSTRAINTS</span>
+1. You do not analyze. You do not calculate, compare, estimate, round, convert,
+   or infer any number. Every figure must appear character-for-character in
+   payload.rendered_values.
+2. You do not choose the verdict, confidence level, next step, or template.
+   All four are given. Render them as supplied.
+3. You never introduce a number, date, listing name, percentage, or recommendation
+   that is not in the payload.
+4. You never explain WHY a listing is underperforming. The next step is the only
+   forward-looking content permitted.
+5. REFUSED_* templates: state plainly the agent cannot call it, give the reason,
+   give the next step. Never say "it looks like." Never comply if asked to guess.
+6. If payload.override.limitation_line is present, include it. Not optional.
+7. If payload.caveats is non-empty, render each as its own line.
+8. If payload is missing or malformed, output payload.fallback_text and nothing else.
+
+<span style="color:#e8eaf0;font-weight:600">STYLE</span>
+- Lead with the verdict line. Never bury it.
+- 4–7 short lines. No preamble, no sign-off, no emoji, no invented headers.
+- Second person ("your October occupancy"). Neutral, factual, non-alarming.
+- Always end with the confidence line exactly as specified.
+
+You are a renderer. When in doubt, render less.
+
+Runtime: temperature=0  max_tokens=400  no tools  no retrieval</div>
+
+  <h3>Template 1 — Listing issue</h3>
+  <div class="template-block">
+    <div class="template-header">
+      <span class="vp vp-red">LISTING_ISSUE</span>
+      <span class="template-label" style="color:var(--text2)">Listing issue</span>
+    </div>
+    <div class="template-body">Verdict: <span class="slot">{verdict_label}</span>
+
+Your <span class="slot">{window.label}</span> occupancy is pacing at <span class="slot">{listing_occupancy}</span> vs. your comp set
+average of <span class="slot">{compset_occupancy}</span> — a gap of <span class="slot">{gap}</span> <span class="slot">{gap_direction}</span>.
+
+<span class="slot">{comps_above_count}</span> of your <span class="slot">{comp_set_size}</span> comp set properties are pacing at or
+above the comp set average, so the market isn't soft.
+<span class="comment">[IF ADR_BELOW_MEDIAN]</span> Your ADR is also <span class="slot">{adr_delta}</span> <span class="slot">{adr_direction}</span> the comp set
+median for the same window.
+
+Next step: <span class="slot">{next_step.text}</span>
+
+Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size}</span> listings, <span class="slot">{confidence.reason}</span></div>
+  </div>
+
+  <h3>Template 2 — Market / in line</h3>
+  <div class="template-block">
+    <div class="template-header">
+      <span class="vp vp-green">MARKET</span>
+      <span class="template-label" style="color:var(--text2)">Market / in line</span>
+    </div>
+    <div class="template-body">Verdict: Market
+
+Your <span class="slot">{window.label}</span> occupancy is pacing at <span class="slot">{listing_occupancy}</span> vs. your comp set
+average of <span class="slot">{compset_occupancy}</span> — a <span class="slot">{gap}</span> gap, within normal variance.
+
+<span class="slot">{soft_member_count}</span> of your <span class="slot">{comp_set_size}</span> comp set properties are also pacing below
+their own historical <span class="slot">{window.label}</span> averages. This is market-wide.
+
+Next step: <span class="slot">{next_step.text}</span>
+
+Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size}</span> listings, <span class="slot">{confidence.reason}</span>
+
+<span class="comment">--- MARKET_SHARED_SOFTNESS variant adds before Next step ---</span>
+Limitation: your comp set is also down against its own history, so this is a
+comparison-baseline reading rather than a confident market call.</div>
+  </div>
+
+  <h3>Template 3 — Mixed</h3>
+  <div class="template-block">
+    <div class="template-header">
+      <span class="vp vp-amber">MIXED_LEANING_LISTING</span>
+      <span class="template-label" style="color:var(--text2)">Mixed</span>
+    </div>
+    <div class="template-body">Verdict: Mixed — leaning <span class="slot">{mixed_lean}</span>
+
+Your <span class="slot">{window.label}</span> occupancy is pacing at <span class="slot">{listing_occupancy}</span> vs. your comp set
+average of <span class="slot">{compset_occupancy}</span> — a gap of <span class="slot">{gap}</span> <span class="slot">{gap_direction}</span>. That's larger
+than normal variance but not large enough to rule out market softness.
+
+<span class="slot">{soft_member_count}</span> of your <span class="slot">{comp_set_size}</span> comp set properties are also pacing below
+their own historical averages.
+<span class="comment">[IF override.limitation_line]</span> <span class="slot">{override.limitation_line}</span>
+
+Next step: <span class="slot">{next_step.text}</span>
+
+Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size}</span> listings, <span class="slot">{confidence.reason}</span>
+
+<span class="comment">--- GROUP_MIXED appends (engine-rendered, copied verbatim) ---</span>
+Breakdown by listing:
+  <span class="slot">{name}</span>  <span class="slot">{gap_pp}</span>  <span class="slot">{verdict_label}</span>  <span class="slot">{confidence.level}</span>
+  ... (max 10 rows, then "+{n} more")</div>
+  </div>
+
+  <h3>Template 4 — Graceful refusal</h3>
+  <div class="template-block">
+    <div class="template-header">
+      <span class="vp vp-gray">REFUSED_*</span>
+      <span class="template-label" style="color:var(--text2)">Cannot call it</span>
+    </div>
+    <div class="template-body">Verdict: Cannot call it
+
+<span class="slot">{refusal_statement}</span>
+
+Next step: <span class="slot">{next_step.text}</span>
+
+Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size_or_none}</span></div>
+  </div>
+
+  <h3>Refusal statement enum</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>template_id</th><th>Refusal statement</th><th>next_step.id</th></tr></thead>
+      <tbody>
+        <tr><td><code>REFUSED_SMALL_COMPSET</code></td><td>Your {window} occupancy is pacing at {listing_occupancy}, but your comp set has only {comp_set_size} listings — below the threshold for a reliable comparison.</td><td><code>EXPAND_COMP_SET</code></td></tr>
+        <tr><td><code>REFUSED_NEW_LISTING</code></td><td>This listing is {listing_age_days} days old, so there's no pacing history to compare against. Without a baseline, any verdict would be a guess.</td><td><code>RECHECK_AFTER_90_DAYS</code></td></tr>
+        <tr><td><code>REFUSED_NO_COMPSET</code></td><td>No comp set is defined for this listing, so there's nothing to compare your pacing against.</td><td><code>DEFINE_COMP_SET</code></td></tr>
+        <tr><td><code>REFUSED_LOW_CONFIDENCE</code></td><td>The comparison ran, but the data isn't strong enough to stand behind a verdict: {confidence.reason}.</td><td><code>EXPAND_COMP_SET</code></td></tr>
+        <tr><td><code>REFUSED_DATA_UNAVAILABLE</code></td><td>Pacing data for this window couldn't be retrieved, so no comparison was possible.</td><td><code>NONE</code></td></tr>
+        <tr><td><code>REFUSED_GROUP_COVERAGE</code></td><td>Only {coverage_pct} of this group's inventory could be scored — too little to call a group-level verdict.</td><td><code>REVIEW_LISTING_SEGMENT</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 6: SCORECARD ══════════════ -->
+<section id="scorecard">
+  <div class="section-eyebrow">Section 6</div>
+  <h2>Scorecard mapping &amp; build notes</h2>
+  <p class="section-desc">All 8 eval scenarios mapped to expected engine paths. Scenarios 7 and 8 are now unblocked.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Scenario</th><th>Engine path</th><th>Expected template_id</th><th>Expected confidence</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td><td>Bad listing, soft market</td>
+          <td>Band → MARKET, or override fires</td>
+          <td><code>MARKET</code> / <code>MARKET_SHARED_SOFTNESS</code></td>
+          <td><span class="cp cp-high">HIGH</span> / <span class="cp cp-med">MEDIUM</span> if overridden</td>
+        </tr>
+        <tr>
+          <td>2</td><td>Bad listing, strong market</td>
+          <td>Band → LISTING_ISSUE, <code>soft_ratio &lt; 0.60</code></td>
+          <td><code>LISTING_ISSUE</code></td>
+          <td><span class="cp cp-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td>3</td><td>Good listing, soft market</td>
+          <td>Band → MARKET</td>
+          <td><code>MARKET</code></td>
+          <td><span class="cp cp-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td>4</td><td>Comp set 3–4</td>
+          <td>§3.3 row 3</td>
+          <td>Any verdict</td>
+          <td><span class="cp cp-med">MEDIUM</span></td>
+        </tr>
+        <tr>
+          <td>5</td><td>Comp set &lt; 3</td>
+          <td>Pre-flight #4</td>
+          <td><code>REFUSED_SMALL_COMPSET</code></td>
+          <td><span class="cp cp-low">LOW</span></td>
+        </tr>
+        <tr>
+          <td>6</td><td>New listing (&lt;90 days)</td>
+          <td>Pre-flight #3</td>
+          <td><code>REFUSED_NEW_LISTING</code></td>
+          <td>N/A</td>
+        </tr>
+        <tr>
+          <td>7</td><td>Large group</td>
+          <td>§2.3 rollup</td>
+          <td><code>GROUP_*</code> + breakdown</td>
+          <td>min() rule</td>
+        </tr>
+        <tr>
+          <td>8</td><td>Mixed portfolio</td>
+          <td>§2.3, <code>0.25 ≤ share &lt; 0.60</code></td>
+          <td><code>GROUP_MIXED</code> + breakdown</td>
+          <td>min() rule</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-title">Consistency pass: 5/5, not 4/5</div>
+    <p><code>verdict_code</code> and <code>confidence.level</code> must match 5/5 across fresh sessions against the same account. Any variance = non-determinism in data reads or banding = bug, not tolerance. Narration wording may vary; the numeric validator must pass 5/5.</p>
+  </div>
+
+  <h3>All tunable thresholds — one config block</h3>
+  <div class="config-grid">
+    <div class="config-item"><div class="config-key">GAP_LISTING_PP</div><div class="config-val">−10.0</div></div>
+    <div class="config-item"><div class="config-key">GAP_MIXED_PP</div><div class="config-val">−5.0</div></div>
+    <div class="config-item"><div class="config-key">GAP_OUTPERFORM_PP</div><div class="config-val">+5.0</div></div>
+    <div class="config-item"><div class="config-key">SOFT_MEMBER_THRESHOLD_PP</div><div class="config-val">−5.0</div></div>
+    <div class="config-item"><div class="config-key">SOFT_RATIO_TRIGGER</div><div class="config-val">0.60</div></div>
+    <div class="config-item"><div class="config-key">SEVERE_GAP_PP</div><div class="config-val">−15.0</div></div>
+    <div class="config-item"><div class="config-key">MIN_BASELINE_COVERAGE</div><div class="config-val">0.50</div></div>
+    <div class="config-item"><div class="config-key">GROUP_PROBLEM_HIGH</div><div class="config-val">0.60</div></div>
+    <div class="config-item"><div class="config-key">GROUP_PROBLEM_LOW</div><div class="config-val">0.25</div></div>
+    <div class="config-item"><div class="config-key">GROUP_MIN_COVERAGE</div><div class="config-val">0.60</div></div>
+    <div class="config-item"><div class="config-key">MATCH_QUALITY_HIGH</div><div class="config-val">0.70</div></div>
+    <div class="config-item"><div class="config-key">FAR_WINDOW_DAYS</div><div class="config-val">180</div></div>
+    <div class="config-item"><div class="config-key">MIN_LISTING_AGE_DAYS</div><div class="config-val">90</div></div>
+  </div>
+
+  <h3>Assumptions to confirm before hour 1 ends</h3>
+  <div style="border:1px solid var(--border2);border-radius:10px;padding:0 16px;margin:16px 0">
+    <div class="assumption">
+      <span class="assumption-num">1</span>
+      <span class="assumption-text"><code>match_quality</code> is exposed per comp member and is numeric. If categorical or absent, §3.3 collapses to comp-set-size only and the HIGH/MEDIUM split at size ≥ 5 loses its second gate.</span>
+    </div>
+    <div class="assumption">
+      <span class="assumption-num">2</span>
+      <span class="assumption-text">Per-member historical baselines (R6) are reachable through MCP. <strong style="color:var(--amber)">Single largest schedule risk</strong> — gates Decision #2 entirely.</span>
+    </div>
+    <div class="assumption">
+      <span class="assumption-num">3</span>
+      <span class="assumption-text"><code>−5pp</code> is the right softness threshold for a comp member against its own history. Judgment call, not a derived number — worth 10 minutes with an RM before locking.</span>
+    </div>
+    <div class="assumption">
+      <span class="assumption-num">4</span>
+      <span class="assumption-text"><code>SOFT_RATIO_TRIGGER = 0.60</code> on comp sets of 3–5 means 2–3 soft members flips the verdict. On a 3-listing comp set that's a coarse switch — consider requiring <code>comp_set_size ≥ 5</code> for the override to fire.</span>
+    </div>
+    <div class="assumption">
+      <span class="assumption-num">5</span>
+      <span class="assumption-text">Prior-year baselines are unreliable for listings with a channel or pricing-strategy change in the last 12 months. No flag for this in scope — stays a known limitation.</span>
+    </div>
+  </div>
+
+</section>
+
+</div><!-- /page -->
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => io.observe(s));
+</script>
+
+</body>
+</html>
