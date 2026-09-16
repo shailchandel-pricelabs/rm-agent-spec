@@ -261,6 +261,20 @@
   .case-card p { font-size: 13.5px; margin-bottom: 8px; }
   .case-card .callout.quote { margin: 10px 0 0; }
 
+  /* ── PLAIN-READ TABLE HELPERS ── */
+  .trend-up { color: var(--green); font-weight: 600; }
+  .trend-down { color: var(--red); font-weight: 600; }
+  .read-col { color: var(--text); font-size: 12.5px; }
+
+  /* ── QUESTION LIST ── */
+  .question-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+  .question-item {
+    background: var(--bg2); border: 1px solid var(--border2); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 12px 16px;
+  }
+  .question-item p { margin: 0; font-size: 13.5px; color: var(--text); }
+  .question-item .q-why { color: var(--text2); font-size: 12.5px; margin-top: 4px; }
+
   /* ── NAV LOGO / SCROLLBAR ── */
   ol.rules { padding-left: 20px; }
   ol.rules li { font-size: 14px; color: var(--text2); margin-bottom: 8px; line-height: 1.65; }
@@ -285,7 +299,7 @@
   <a href="#card">Response card</a>
   <a href="#decisions">Open decisions</a>
   <a href="#cases">Case studies</a>
-  <a href="#team">Team</a>
+  <a href="#dsq">DS questions</a>
 </nav>
 
 <div class="hero">
@@ -641,20 +655,49 @@ else                                                         → At Par</code></
 <section id="card">
   <div class="section-eyebrow">Section 7</div>
   <h2>Latest open thread — the response-card contract</h2>
-  <p class="section-desc">Three target output cards (verdict → 2–3 evidence sentences → one tool pointer → confidence + comp footer) revealed the <strong>evidence layer</strong> needs things the pipeline doesn't yet specify. None of this is a solution engine.</p>
+  <p class="section-desc">The target output is short: a verdict line, 2–3 evidence sentences, one tool pointer, a confidence + comp-set footer. Getting that short output right turned out to depend on data the pipeline hasn't specified yet. Four gaps, in the order they block the build.</p>
 
-  <ol class="plain">
-    <li><strong>Comparison basis — biggest open question.</strong> The cards compare against a <strong>5-listing comp set</strong> and call that HIGH confidence, but the spec's 120-floor is for <strong>market/neighborhood data</strong>. These are two different bases with <em>opposite</em> confidence models (5 well-matched comps = high; for market data you want 120+). Must decide which is primary (likely: pricing-recommendation comp set as headline, market data as fallback) and write <em>two</em> confidence threshold sets.</li>
-    <li><strong>Per-comp distribution</strong> ("3 of 5 comps ≥65%") — a per-listing count, not the aggregate. 🟥 Confirm PL MCP exposes per-comp forward pacing, not just comp-set average. This is the linchpin — without it, card 1 collapses to a bare level gap, which violates our own rule.</li>
-    <li><strong>Per-comp vs own history</strong> ("4 of 5 below their own October avg") — needs each comp's baseline. Same availability check.</li>
-    <li><strong>Match-quality label</strong> ("well-matched") — surface the internal tier-representativeness gate as a customer-facing label.</li>
-    <li><strong>"Normal variance" band</strong> — present the ±5pp threshold in customer language.</li>
-    <li><strong>Card contract</strong> — make the compact card the default; keep the full evidence table as expandable "show the numbers."</li>
-  </ol>
+  <div class="stage-block">
+    <h3 style="margin-top:0">1. Which comp set sets the confidence — pricing or market?</h3>
+    <p>The card in front of us calls out a <strong>5-listing comp set</strong> as HIGH confidence. But §6's comp trust floor of <strong>120</strong> was written for <strong>market/neighborhood data</strong>. Those are two different populations with opposite confidence curves:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Basis</th><th>What it is</th><th>Confidence curve</th></tr></thead>
+        <tbody>
+          <tr><td>Pricing comp set</td><td>~5 hand-matched comps used for the listing's own price recommendation</td><td>Small is fine — 5 well-matched comps = HIGH</td></tr>
+          <tr><td>Market / neighborhood data</td><td>The full local pool (could be 100s of listings)</td><td>Small is unreliable — needs ≥120 to trust (§6)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px">🟥 <strong>Decision needed before any threshold is coded:</strong> pick one as the card's primary comparison (current lean: pricing comp set as the headline, market data as a fallback when the comp set is thin) and write two separate confidence-threshold tables — one per basis. Coding a single threshold set against the wrong population is how the card ends up over- or under-confident.</p>
+  </div>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">2. The card needs per-listing numbers, not just the comp-set average</h3>
+    <p>Two lines in the target card only work if we can count individual comps, not just average them:</p>
+    <ul class="plain">
+      <li><strong>"3 of 5 comps ≥65% occupancy"</strong> — needs each comp's own forward pacing number, so we can count how many clear a bar. An aggregate average can't produce this sentence.</li>
+      <li><strong>"4 of 5 comps below their own October average"</strong> — needs each comp's own historical baseline, so we can compare every comp to itself, not to the group.</li>
+    </ul>
+    <p style="font-size:13px">🟥 <strong>Confirm before writing any narration code:</strong> does the PriceLabs MCP surface expose <em>per-comp</em> forward pacing and <em>per-comp</em> historical averages, or only the comp-set aggregate? If it's aggregate-only, these two lines can't be built, and the card collapses back to a bare level gap ("48% vs 51%") — which is exactly the failure mode Section 5's design principles forbid.</p>
+  </div>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">3. Two internal signals need a plain-English translation</h3>
+    <ul class="plain">
+      <li><strong>Match quality.</strong> Internally we have a tier-representativeness gate (does the comp set skew to one unit size/tier?). The card needs a one-word customer label for it — e.g. "well-matched" vs "loosely matched" — derived from that gate, not invented per-response by the LLM.</li>
+      <li><strong>"Normal variance."</strong> Internally this is the ±5pp tolerance band from the core check. The card needs a fixed phrase for it ("within normal variance") that's always triggered by the same numeric condition, never phrased freely.</li>
+    </ul>
+  </div>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">4. Card layout: compact by default, numbers on request</h3>
+    <p>Ship the short card (verdict → evidence sentences → tool pointer → confidence footer) as the default response. Keep the full evidence table (per-window, per-segment, all raw numbers) behind an expandable "show the numbers" — not inline in the default reply.</p>
+  </div>
 
   <div class="callout warn">
     <div class="callout-title">Consistency rule to hold</div>
-    <p>The level gap (52% vs 68%) is <em>presentation</em>; the distribution + ADR index is the <em>evidence</em>. Never emit a verdict from a bare level gap.</p>
+    <p>The level gap (52% vs 68%) is <em>presentation</em> — a headline number. The per-comp distribution and ADR index are the <em>evidence</em> that justifies the verdict. Never let the LLM emit a verdict sentence from the level gap alone; it must always be backed by the distribution numbers from Stage 4–6.</p>
   </div>
 </section>
 
@@ -722,25 +765,25 @@ else                                                         → At Par</code></
   <p style="font-size:13px">Overrides sit <em>on top</em> of the base verdict: a booking-window strategy pattern → On Strategy; healthy-but-late pickup → Late Not Lost; weak data → Inconclusive. Two guards can invert the obvious read entirely (cases I, J).</p>
 
   <h3>Master data table</h3>
-  <p style="font-size:13px"><code>ΔL = L now − L STLY</code> · <code>ΔM = M now − M STLY</code> · <code>diff = ΔL − ΔM</code> (&lt; −5 Under, &gt; +5 Over, else At Par)</p>
+  <p style="font-size:13px">Reading order per row: how the <strong>listing</strong> moved vs LY, how the <strong>market</strong> moved vs LY, then <code>diff</code> = the listing's move minus the market's move. <code>diff &lt; −5</code> reads as <strong>Under</strong>, <code>diff &gt; +5</code> as <strong>Over</strong>, otherwise <strong>At Par</strong> — that reading, plus the market's own direction, is what produces the final verdict.</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Case</th><th>L now</th><th>L STLY</th><th>ΔL</th><th>M now</th><th>M STLY</th><th>ΔM</th><th>diff</th><th>Core check</th><th>Final verdict</th></tr></thead>
+      <thead><tr><th>Case</th><th>Listing: LY → now</th><th>Market: LY → now</th><th>diff</th><th>What's happening</th><th>Verdict</th></tr></thead>
       <tbody>
-        <tr><td><strong>A</strong></td><td>48</td><td>44</td><td>+4</td><td>63</td><td>52</td><td>+11</td><td>−7</td><td>Under</td><td><span class="vp vp-red">Me</span></td></tr>
-        <tr><td><strong>B</strong></td><td>41</td><td>55</td><td>−14</td><td>46</td><td>60</td><td>−14</td><td>0</td><td>At Par</td><td><span class="vp vp-amber">Market</span></td></tr>
-        <tr><td><strong>C</strong></td><td>38</td><td>55</td><td>−17</td><td>48</td><td>54</td><td>−6</td><td>−11</td><td>Under</td><td><span class="vp vp-purple">Mixed</span></td></tr>
-        <tr><td><strong>D</strong></td><td>58</td><td>51</td><td>+7</td><td>60</td><td>56</td><td>+4</td><td>+3</td><td>At Par</td><td><span class="vp vp-green">No Slump</span></td></tr>
-        <tr><td><strong>E</strong></td><td>62</td><td>50</td><td>+12</td><td>45</td><td>48</td><td>−3</td><td>+15</td><td>Over</td><td><span class="vp vp-blue">Winning</span> ⚠ underpriced?</td></tr>
-        <tr><td><strong>F</strong></td><td>30</td><td>28</td><td>+2</td><td>55</td><td>44</td><td>+11</td><td>−9</td><td>Under</td><td><span class="vp vp-blue">On Strategy</span> (veto)</td></tr>
-        <tr><td><strong>G</strong></td><td>40</td><td>50</td><td>−10</td><td>58</td><td>56</td><td>+2</td><td>−12</td><td>Under</td><td><span class="vp vp-purple">Late Not Lost</span> (veto)</td></tr>
-        <tr><td><strong>H</strong></td><td>35</td><td>30</td><td>+5</td><td>50</td><td>44</td><td>+6</td><td>−1</td><td>At Par*</td><td><span class="vp vp-gray">Inconclusive</span> (weak data)</td></tr>
-        <tr><td><strong>I</strong></td><td>22</td><td>34</td><td>−12</td><td>40</td><td>38</td><td>+2</td><td>−14</td><td>Under</td><td><span class="vp vp-red">Me</span> — but <em>don't cut price</em> (guard)</td></tr>
-        <tr><td><strong>J</strong></td><td>78</td><td>60</td><td>+18</td><td>55</td><td>57</td><td>−2</td><td>+20</td><td>Over</td><td><span class="vp vp-gray">Not a clean win</span> (RevPAR guard)</td></tr>
+        <tr><td><strong>A</strong></td><td>44 → 48 <span class="trend-up">▲+4</span></td><td>52 → 63 <span class="trend-up">▲+11</span></td><td>−7</td><td class="read-col">Both growing, but the listing is growing much slower than the market.</td><td><span class="vp vp-red">Me</span></td></tr>
+        <tr><td><strong>B</strong></td><td>55 → 41 <span class="trend-down">▼−14</span></td><td>60 → 46 <span class="trend-down">▼−14</span></td><td>0</td><td class="read-col">Both fell by the same amount — the listing didn't lose any ground.</td><td><span class="vp vp-amber">Market</span></td></tr>
+        <tr><td><strong>C</strong></td><td>55 → 38 <span class="trend-down">▼−17</span></td><td>54 → 48 <span class="trend-down">▼−6</span></td><td>−11</td><td class="read-col">Both fell, but the listing fell much further than the market did.</td><td><span class="vp vp-purple">Mixed</span></td></tr>
+        <tr><td><strong>D</strong></td><td>51 → 58 <span class="trend-up">▲+7</span></td><td>56 → 60 <span class="trend-up">▲+4</span></td><td>+3</td><td class="read-col">Listing is growing at least as fast as the market. Nothing wrong.</td><td><span class="vp vp-green">No Slump</span></td></tr>
+        <tr><td><strong>E</strong></td><td>50 → 62 <span class="trend-up">▲+12</span></td><td>48 → 45 <span class="trend-down">▼−3</span></td><td>+15</td><td class="read-col">Listing grew while the market shrank — but check: is it underpriced?</td><td><span class="vp vp-blue">Winning ⚠</span></td></tr>
+        <tr><td><strong>F</strong></td><td>28 → 30 <span class="trend-up">▲+2</span></td><td>44 → 55 <span class="trend-up">▲+11</span></td><td>−9</td><td class="read-col">Reads like "Me" — but this is the same short booking window as LY, which finished on target.</td><td><span class="vp vp-blue">On Strategy</span></td></tr>
+        <tr><td><strong>G</strong></td><td>50 → 40 <span class="trend-down">▼−10</span></td><td>56 → 58 <span class="trend-up">▲+2</span></td><td>−12</td><td class="read-col">Reads like "Me" — but pickup is strong and the whole market is booking later this year.</td><td><span class="vp vp-purple">Late Not Lost</span></td></tr>
+        <tr><td><strong>H</strong></td><td>30 → 35 <span class="trend-up">▲+5</span></td><td>44 → 50 <span class="trend-up">▲+6</span></td><td>−1</td><td class="read-col">Numbers say At Par, but the comp set is too small/skewed to trust that read.</td><td><span class="vp vp-gray">Inconclusive</span></td></tr>
+        <tr><td><strong>I</strong></td><td>34 → 22 <span class="trend-down">▼−12</span></td><td>38 → 40 <span class="trend-up">▲+2</span></td><td>−14</td><td class="read-col">This is the listing — but the fix is not another price cut (rates were already too high).</td><td><span class="vp vp-red">Me</span></td></tr>
+        <tr><td><strong>J</strong></td><td>60 → 78 <span class="trend-up">▲+18</span></td><td>57 → 55 <span class="trend-down">▼−2</span></td><td>+20</td><td class="read-col">Occupancy is up, but it was bought with a rate cut — not a clean win.</td><td><span class="vp vp-gray">Not a clean win</span></td></tr>
       </tbody>
     </table>
   </div>
-  <p style="font-size:12px;color:var(--text3)">*H's core check is unreliable — comp set too small. See case note.</p>
+  <p style="font-size:12px;color:var(--text3)">Case H's diff is technically "At Par," but with only 45 comps skewed toward smaller units, the market read itself can't be trusted — see the case note below.</p>
 
   <h3>Case notes</h3>
 
@@ -814,31 +857,33 @@ else                                                         → At Par</code></
 
 <hr>
 
-<!-- ══════════════ SECTION 10: TEAM ══════════════ -->
-<section id="team">
+<!-- ══════════════ SECTION 10: DS QUESTIONS ══════════════ -->
+<section id="dsq">
   <div class="section-eyebrow">Section 10</div>
-  <h2>Team &amp; logistics</h2>
-  <p class="section-desc">Hackathon: build Sept 15–17, present Sept 18, results Sept 21.</p>
+  <h2>Questions for the Data Science team</h2>
+  <p class="section-desc">Every response format above assumes data that hasn't been confirmed to exist. Ask these <strong>before</strong> writing narration or threshold code — the answers change what a card can say, not just how it's phrased.</p>
 
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Who</th><th>Role</th></tr></thead>
-      <tbody>
-        <tr><td>Shail</td><td>Lead / PM</td></tr>
-        <tr><td>Revanth</td><td>Data / build (+ Anish for API access)</td></tr>
-        <tr><td>Soniya</td><td>Data / mapping</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="callout info">
-    <div class="callout-title">Related project</div>
-    <p>Atharva's project is similar but includes solutions in scope — ours is tighter, which is an advantage for delivering in the window.</p>
-  </div>
-
-  <div class="callout warn">
-    <div class="callout-title">Immediate next build step</div>
-    <p>Verdict/confidence pseudocode for Stages 3–7 + 10 (Stage 8 held until its scope is decided), plus an eval fixture set built from the ten worked cases (§9) to satisfy the reproducibility bar.</p>
+  <div class="question-list">
+    <div class="question-item">
+      <p>1. For a given listing's comp set, can we pull <strong>each comp's own forward pacing number</strong> individually (not just the comp-set average)?</p>
+      <p class="q-why">Why it matters: without this, we can't produce "3 of 5 comps are pacing above 65%" — the card falls back to a bare average, which is the weak evidence pattern we're trying to avoid.</p>
+    </div>
+    <div class="question-item">
+      <p>2. For each comp, can we pull <strong>its own historical (STLY) baseline</strong> — so we can compare each comp to its own past, not just to the group?</p>
+      <p class="q-why">Why it matters: this is what "4 of 5 comps are below their own October average" needs. Same data shape as Q1, different metric.</p>
+    </div>
+    <div class="question-item">
+      <p>3. Are the <strong>pricing-recommendation comp set</strong> (~5 hand-matched comps) and the <strong>market/neighborhood dataset</strong> (100s of listings) two separate, independently queryable objects — or is there only one comp-set concept in the data model?</p>
+      <p class="q-why">Why it matters: the spec has two different confidence floors (small-is-fine for pricing comps, ≥120 for market data). If there's only one object, we need to know which population it actually represents before setting either threshold.</p>
+    </div>
+    <div class="question-item">
+      <p>4. Is there a field that describes <strong>comp tier / unit-size representativeness</strong> (e.g. bedroom count, property type) per comp, so we can flag when the comp set skews to one tier?</p>
+      <p class="q-why">Why it matters: this becomes the customer-facing "well-matched" vs "loosely matched" label, and it's also what makes ADR-index comparisons trustworthy or not.</p>
+    </div>
+    <div class="question-item">
+      <p>5. Does the existing Account Review core check compare <strong>on-the-books-now vs same-lead-time-last-year</strong>, or vs <strong>final realized STLY</strong>?</p>
+      <p class="q-why">Why it matters: this is the pace-matching assumption everything else is built on. If the helper doesn't pace-match, we need to feed it pre-matched numbers ourselves before any threshold in this doc is trustworthy.</p>
+    </div>
   </div>
 </section>
 
