@@ -3,31 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Is this me, or the market? — Agent Spec</title>
+<title>Is this me, or the market? — Verdict Logic Spec</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0f1117;
-    --bg2: #161922;
-    --bg3: #1d2130;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #e8eaf0;
-    --text2: #8b90a0;
-    --text3: #5a5f70;
-    --accent: #5b8def;
-    --accent-dim: rgba(91,141,239,0.12);
-    --green: #3ecf8e;
-    --green-dim: rgba(62,207,142,0.12);
-    --amber: #f6a623;
-    --amber-dim: rgba(246,166,35,0.12);
-    --red: #e05a5a;
-    --red-dim: rgba(224,90,90,0.12);
-    --purple: #a78bfa;
-    --purple-dim: rgba(167,139,250,0.12);
+    --bg: #ffffff;
+    --bg2: #f6f7fa;
+    --bg3: #eef0f5;
+    --border: rgba(15,17,23,0.08);
+    --border2: rgba(15,17,23,0.14);
+    --text: #14161f;
+    --text2: #565a6e;
+    --text3: #8b8fa0;
+    --accent: #3363d6;
+    --accent-dim: rgba(51,99,214,0.09);
+    --green: #17845c;
+    --green-dim: rgba(23,132,92,0.09);
+    --amber: #a15c05;
+    --amber-dim: rgba(161,92,5,0.09);
+    --red: #c23a3a;
+    --red-dim: rgba(194,58,58,0.09);
+    --purple: #6d4fd1;
+    --purple-dim: rgba(109,79,209,0.09);
     --mono: 'JetBrains Mono', monospace;
     --sans: 'Inter', system-ui, sans-serif;
   }
@@ -46,7 +46,7 @@
   /* ── NAV ── */
   nav {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(15,17,23,0.9);
+    background: rgba(255,255,255,0.88);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 32px;
@@ -77,30 +77,30 @@
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 11px; font-weight: 500; font-family: var(--mono);
     color: var(--accent); background: var(--accent-dim);
-    border: 1px solid rgba(91,141,239,0.2);
+    border: 1px solid rgba(51,99,214,0.2);
     padding: 3px 10px; border-radius: 20px; margin-bottom: 24px;
   }
   .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
   h1 {
     font-size: clamp(28px, 4vw, 44px); font-weight: 600; line-height: 1.15;
     letter-spacing: -0.02em; margin-bottom: 18px;
-    background: linear-gradient(135deg, #e8eaf0 30%, #5b8def);
+    background: linear-gradient(135deg, #14161f 30%, #3363d6);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .hero-sub {
-    font-size: 16px; color: var(--text2); max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    font-size: 16px; color: var(--text2); max-width: 640px; margin-bottom: 32px; line-height: 1.7;
   }
   .meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
   .badge {
     font-size: 11px; font-weight: 500; font-family: var(--mono);
     padding: 3px 10px; border-radius: 6px; border: 1px solid;
   }
-  .badge-blue { color: var(--accent); background: var(--accent-dim); border-color: rgba(91,141,239,0.2); }
-  .badge-green { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.2); }
-  .badge-amber { color: var(--amber); background: var(--amber-dim); border-color: rgba(246,166,35,0.2); }
-  .badge-red { color: var(--red); background: var(--red-dim); border-color: rgba(224,90,90,0.2); }
-  .badge-purple { color: var(--purple); background: var(--purple-dim); border-color: rgba(167,139,250,0.2); }
-  .badge-gray { color: var(--text2); background: rgba(255,255,255,0.05); border-color: var(--border2); }
+  .badge-blue { color: var(--accent); background: var(--accent-dim); border-color: rgba(51,99,214,0.2); }
+  .badge-green { color: var(--green); background: var(--green-dim); border-color: rgba(23,132,92,0.2); }
+  .badge-amber { color: var(--amber); background: var(--amber-dim); border-color: rgba(161,92,5,0.2); }
+  .badge-red { color: var(--red); background: var(--red-dim); border-color: rgba(194,58,58,0.2); }
+  .badge-purple { color: var(--purple); background: var(--purple-dim); border-color: rgba(109,79,209,0.2); }
+  .badge-gray { color: var(--text2); background: rgba(15,17,23,0.04); border-color: var(--border2); }
 
   /* ── MAIN LAYOUT ── */
   .page { max-width: 900px; margin: 0 auto; padding: 0 32px 80px; }
@@ -120,13 +120,25 @@
   h3 { font-size: 15px; font-weight: 600; margin: 28px 0 12px; color: var(--text); }
   p { color: var(--text2); margin-bottom: 12px; }
   strong { color: var(--text); font-weight: 600; }
+  em { color: var(--text2); }
   code {
     font-family: var(--mono); font-size: 12px;
     background: var(--bg3); border: 1px solid var(--border2);
     padding: 1px 6px; border-radius: 4px; color: var(--accent);
   }
+  pre {
+    background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px;
+    padding: 16px 18px; overflow-x: auto; margin: 16px 0;
+  }
+  pre code {
+    background: none; border: none; padding: 0; color: var(--text2);
+    font-size: 12.5px; line-height: 1.8;
+  }
 
   hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  ul.plain, ol.plain { padding-left: 20px; margin-bottom: 12px; }
+  ul.plain li, ol.plain li { font-size: 14px; color: var(--text2); margin-bottom: 8px; line-height: 1.65; }
 
   /* ── TABLES ── */
   .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 10px; border: 1px solid var(--border2); }
@@ -143,7 +155,7 @@
     color: var(--text2); vertical-align: top; line-height: 1.55;
   }
   tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { background: rgba(255,255,255,0.02); }
+  tbody tr:hover td { background: rgba(15,17,23,0.015); }
   td code { font-size: 11px; }
 
   /* ── VERDICT PILLS ── */
@@ -151,38 +163,21 @@
     display: inline-block; font-size: 11px; font-weight: 500; font-family: var(--mono);
     padding: 2px 8px; border-radius: 20px; white-space: nowrap; border: 1px solid;
   }
-  .vp-red { color: var(--red); background: var(--red-dim); border-color: rgba(224,90,90,0.25); }
-  .vp-amber { color: var(--amber); background: var(--amber-dim); border-color: rgba(246,166,35,0.25); }
-  .vp-green { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.25); }
-  .vp-blue { color: var(--accent); background: var(--accent-dim); border-color: rgba(91,141,239,0.25); }
-  .vp-gray { color: var(--text2); background: rgba(255,255,255,0.05); border-color: var(--border2); }
+  .vp-red { color: var(--red); background: var(--red-dim); border-color: rgba(194,58,58,0.25); }
+  .vp-amber { color: var(--amber); background: var(--amber-dim); border-color: rgba(161,92,5,0.25); }
+  .vp-green { color: var(--green); background: var(--green-dim); border-color: rgba(23,132,92,0.25); }
+  .vp-blue { color: var(--accent); background: var(--accent-dim); border-color: rgba(51,99,214,0.25); }
+  .vp-purple { color: var(--purple); background: var(--purple-dim); border-color: rgba(109,79,209,0.25); }
+  .vp-gray { color: var(--text2); background: rgba(15,17,23,0.04); border-color: var(--border2); }
 
   /* ── CONF PILLS ── */
   .cp {
     display: inline-block; font-size: 11px; font-weight: 500; font-family: var(--mono);
     padding: 2px 8px; border-radius: 20px; border: 1px solid; white-space: nowrap;
   }
-  .cp-high { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.25); }
-  .cp-med { color: var(--amber); background: var(--amber-dim); border-color: rgba(246,166,35,0.25); }
-  .cp-low { color: var(--red); background: var(--red-dim); border-color: rgba(224,90,90,0.25); }
-
-  /* ── GAP TABLE (special) ── */
-  .gap-table {
-    border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; margin: 16px 0;
-  }
-  .gap-row {
-    display: grid; grid-template-columns: 220px 1fr 1fr;
-    gap: 0; padding: 11px 16px; border-bottom: 1px solid var(--border);
-    font-size: 13px; align-items: center;
-  }
-  .gap-row:last-child { border-bottom: none; }
-  .gap-row.header {
-    background: var(--bg3);
-    font-size: 11px; font-weight: 500; font-family: var(--mono);
-    color: var(--text3); text-transform: uppercase; letter-spacing: .06em;
-  }
-  .gap-code { font-family: var(--mono); font-size: 12px; color: var(--text); }
-  .gap-action { color: var(--text2); font-size: 13px; }
+  .cp-high { color: var(--green); background: var(--green-dim); border-color: rgba(23,132,92,0.25); }
+  .cp-med { color: var(--amber); background: var(--amber-dim); border-color: rgba(161,92,5,0.25); }
+  .cp-low { color: var(--red); background: var(--red-dim); border-color: rgba(194,58,58,0.25); }
 
   /* ── CALLOUT ── */
   .callout {
@@ -190,97 +185,40 @@
     font-size: 13px; line-height: 1.65; border: 1px solid;
   }
   .callout-title { font-weight: 600; font-size: 13px; margin-bottom: 5px; }
-  .callout.info { background: var(--accent-dim); border-color: rgba(91,141,239,0.2); }
+  .callout.info { background: var(--accent-dim); border-color: rgba(51,99,214,0.2); }
   .callout.info .callout-title { color: var(--accent); }
-  .callout.warn { background: var(--amber-dim); border-color: rgba(246,166,35,0.2); }
+  .callout.warn { background: var(--amber-dim); border-color: rgba(161,92,5,0.2); }
   .callout.warn .callout-title { color: var(--amber); }
-  .callout.danger { background: var(--red-dim); border-color: rgba(224,90,90,0.2); }
+  .callout.danger { background: var(--red-dim); border-color: rgba(194,58,58,0.2); }
   .callout.danger .callout-title { color: var(--red); }
+  .callout.quote { background: var(--bg2); border-color: var(--border2); border-left: 3px solid var(--accent); }
+  .callout.quote p { color: var(--text2); font-style: italic; }
   .callout p { color: var(--text2); margin: 0; font-size: 13px; }
+  .callout p + p { margin-top: 8px; }
 
-  /* ── FLOWCHART ── */
-  .flowchart-wrap {
-    background: var(--bg2); border: 1px solid var(--border2);
-    border-radius: 12px; padding: 32px 24px; margin: 20px 0;
-    overflow-x: auto;
+  /* ── PRINCIPLE / STAGE CARDS ── */
+  .principle-list { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+  .principle-card {
+    background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px;
+    padding: 16px 18px; display: grid; grid-template-columns: 28px 1fr; gap: 12px;
   }
-  .fc { position: relative; }
+  .principle-num {
+    font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent);
+  }
+  .principle-card p { margin: 0; font-size: 13.5px; color: var(--text2); }
+  .principle-card strong { color: var(--text); }
 
-  /* nodes */
-  .fc-node {
-    position: absolute;
-    border-radius: 8px;
-    font-size: 11px; font-family: var(--mono);
-    font-weight: 500;
-    display: flex; align-items: center; justify-content: center;
-    text-align: center; line-height: 1.35;
-    cursor: default;
+  .stage-block {
+    border: 1px solid var(--border2); border-radius: 10px; padding: 20px 22px; margin: 18px 0;
+    background: var(--bg2);
   }
-  .fc-node.trigger {
-    background: var(--purple-dim); border: 1px solid rgba(167,139,250,0.3);
-    color: var(--purple);
-  }
-  .fc-node.action {
-    background: var(--bg3); border: 1px solid var(--border2);
-    color: var(--text);
-  }
-  .fc-node.decision {
-    background: var(--accent-dim); border: 1px solid rgba(91,141,239,0.3);
-    color: var(--accent); border-radius: 6px; transform: rotate(45deg);
-  }
-  .fc-node.decision .inner { transform: rotate(-45deg); font-size: 10px; }
-  .fc-node.refuse {
-    background: var(--red-dim); border: 1px solid rgba(224,90,90,0.3);
-    color: var(--red);
-  }
-  .fc-node.verdict-listing { background: var(--red-dim); border: 1px solid rgba(224,90,90,0.3); color: var(--red); }
-  .fc-node.verdict-mixed { background: var(--amber-dim); border: 1px solid rgba(246,166,35,0.3); color: var(--amber); }
-  .fc-node.verdict-market { background: var(--green-dim); border: 1px solid rgba(62,207,142,0.3); color: var(--green); }
-  .fc-node.verdict-out { background: var(--accent-dim); border: 1px solid rgba(91,141,239,0.3); color: var(--accent); }
-  .fc-node.emit {
-    background: var(--purple-dim); border: 1px solid rgba(167,139,250,0.3);
-    color: var(--purple);
-  }
-  .fc-node.override {
-    background: var(--amber-dim); border: 1px solid rgba(246,166,35,0.3);
-    color: var(--amber);
+  .stage-num {
+    display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600;
+    color: var(--purple); background: var(--purple-dim); border: 1px solid rgba(109,79,209,0.25);
+    padding: 2px 8px; border-radius: 20px; margin-bottom: 10px;
   }
 
-  /* SVG flowchart */
-  .svg-fc {
-    display: block; width: 100%; min-width: 700px;
-  }
-
-  /* ── CONFIG GRID ── */
-  .config-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 8px; margin: 16px 0;
-  }
-  .config-item {
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 10px 14px;
-  }
-  .config-key { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 4px; }
-  .config-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--accent); }
-
-  /* ── TEMPLATE BLOCKS ── */
-  .template-block {
-    background: var(--bg2); border: 1px solid var(--border2);
-    border-radius: 10px; overflow: hidden; margin: 16px 0;
-  }
-  .template-header {
-    padding: 10px 16px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px; background: var(--bg3);
-  }
-  .template-label { font-size: 12px; font-weight: 600; }
-  .template-body {
-    padding: 18px 20px; font-family: var(--mono); font-size: 12px;
-    line-height: 1.8; color: var(--text2); white-space: pre-wrap;
-  }
-  .slot { color: var(--accent); }
-  .comment { color: var(--text3); }
-
-  /* ── ASSUMPTION LIST ── */
+  /* ── ASSUMPTION / DECISION LIST ── */
   .assumption {
     display: grid; grid-template-columns: 28px 1fr;
     gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border);
@@ -293,37 +231,44 @@
   }
   .assumption-text { color: var(--text2); line-height: 1.65; }
 
-  /* ── SCORECARD ── */
-  .sc-status {
-    font-family: var(--mono); font-size: 11px; font-weight: 500;
-    padding: 2px 8px; border-radius: 4px;
+  /* ── CONFIG GRID ── */
+  .config-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px; margin: 16px 0;
   }
-  .sc-blocked { background: var(--red-dim); color: var(--red); }
-  .sc-ready { background: var(--green-dim); color: var(--green); }
-
-  /* ── ARCH CARDS ── */
-  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
-  .arch-card {
-    background: var(--bg2); border: 1px solid var(--border2);
-    border-radius: 10px; padding: 20px;
+  .config-item {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 10px 14px;
   }
-  .arch-card.engine { border-top: 2px solid var(--accent); }
-  .arch-card.narrator { border-top: 2px solid var(--purple); }
-  .arch-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
-  .arch-card.engine h4 { color: var(--accent); }
-  .arch-card.narrator h4 { color: var(--purple); }
-  .arch-card ul { padding-left: 16px; }
-  .arch-card li { font-size: 13px; color: var(--text2); margin-bottom: 5px; line-height: 1.55; }
+  .config-key { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .config-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--accent); }
+  .config-status { font-family: var(--mono); font-size: 10px; margin-top: 4px; }
+  .config-status.adopt { color: var(--green); }
+  .config-status.confirm { color: var(--amber); }
+  .config-status.define { color: var(--red); }
 
+  /* ── CASE STUDY CARDS ── */
+  .case-card {
+    background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px;
+    padding: 18px 20px; margin: 16px 0;
+  }
+  .case-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .case-letter {
+    font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--text);
+    background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px;
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  }
+  .case-card p { font-size: 13.5px; margin-bottom: 8px; }
+  .case-card .callout.quote { margin: 10px 0 0; }
+
+  /* ── NAV LOGO / SCROLLBAR ── */
   ol.rules { padding-left: 20px; }
   ol.rules li { font-size: 14px; color: var(--text2); margin-bottom: 8px; line-height: 1.65; }
 
   @media (max-width: 640px) {
     nav { padding: 0 16px; }
     .hero, .page { padding-left: 16px; padding-right: 16px; }
-    .arch-grid { grid-template-columns: 1fr; }
-    .gap-row { grid-template-columns: 160px 1fr; }
-    .gap-row .gap-action { display: none; }
+    .principle-card { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -331,721 +276,449 @@
 
 <nav>
   <div class="nav-logo">PriceLabs <span>RM Agent</span></div>
-  <a href="#architecture" class="active">Architecture</a>
+  <a href="#principles" class="active">Principles</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#stages">Stages</a>
+  <a href="#thresholds">Thresholds</a>
   <a href="#decisions">Open decisions</a>
-  <a href="#flowchart">Flowchart</a>
-  <a href="#api">API & data</a>
-  <a href="#templates">Templates</a>
-  <a href="#scorecard">Scorecard</a>
+  <a href="#cases">Case studies</a>
 </nav>
 
 <div class="hero">
-  <div class="hero-tag">Hackathon 2026 · Engineering Spec v1.0</div>
+  <div class="hero-tag">Hackathon 2026 · Verdict Logic Spec v2.0</div>
   <h1>Is this me,<br>or the market?</h1>
-  <p class="hero-sub">A deterministic pacing-comparison agent that tells a host whether their booking slump is a listing problem or a market problem — with a confidence score attached to the verdict, not buried under it.</p>
+  <p class="hero-sub">Given a booking slump, return a deterministic verdict — is it a <em>listing</em> problem or a <em>market</em> problem — with a confidence score on the verdict line, plus the evidence and (light) next steps.</p>
+  <div class="meta-row">
+    <span class="badge badge-blue">Agent: RM AI Agent</span>
+    <span class="badge badge-amber">Status: Draft for team discussion</span>
+    <span class="badge badge-red">5 blocking decisions 🟥</span>
+  </div>
 </div>
 
 <div class="page">
 
-<div class="callout warn" style="margin-top:0">
-  <div class="callout-title">Architecture &amp; guardrails</div>
-  <p>Revanth will update it.</p>
-</div>
-
-<!-- ══════════════ SECTION 1: ARCHITECTURE ══════════════ -->
-<section id="architecture">
+<!-- ══════════════ SECTION 1: DESIGN PRINCIPLES ══════════════ -->
+<section id="principles">
   <div class="section-eyebrow">Section 1</div>
   <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px">
-    <h2 style="margin-bottom:0">Architecture & guardrail</h2>
-    <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
+    <h2 style="margin-bottom:0">Design principles</h2>
+    <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(109,79,209,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
   </div>
-  <p class="section-desc">The system is split into two layers with a hard contract between them. The LLM never calculates, infers, or selects the verdict — it strictly populates preset templates from deterministic engine outputs.</p>
+  <p class="section-desc">Agree these first — everything downstream assumes them.</p>
 
   <div id="ai-answers">
-  <div class="arch-grid">
-    <div class="arch-card engine">
-      <h4>⚙ Deterministic engine</h4>
-      <ul>
-        <li>Fetch pacing data via masq (read-only)</li>
-        <li>Compute signed <code>gap_pp</code></li>
-        <li>Apply threshold bands</li>
-        <li>Run aggregate-signal override</li>
-        <li>Assign confidence level</li>
-        <li>Select <code>template_id</code> + <code>next_step_id</code></li>
-        <li>Emit <code>VerdictPayload</code></li>
-      </ul>
+  <div class="principle-list">
+    <div class="principle-card">
+      <div class="principle-num">1</div>
+      <p><strong>Rules decide, the LLM narrates.</strong> The verdict and confidence are computed by fixed thresholds. The LLM only turns the computed result into customer-safe language. If the LLM decides "me vs market," we fail the eval's 4–5×-same-result requirement. This is the most important line in the doc.</p>
     </div>
-    <div class="arch-card narrator">
-      <h4>✦ LLM narrator</h4>
-      <ul>
-        <li>Receives only the <code>VerdictPayload</code></li>
-        <li>Fills template slots verbatim</li>
-        <li>Copies numbers from <code>rendered_values</code></li>
-        <li>Never formats a number</li>
-        <li>Never invents a next step</li>
-        <li>Never receives raw pacing arrays</li>
-        <li>Temperature = 0, max_tokens = 400</li>
-      </ul>
+    <div class="principle-card">
+      <div class="principle-num">2</div>
+      <p><strong>Five verdict states, not two.</strong> <code>No Slump</code> · <code>Market</code> · <code>Mixed</code> · <code>Me</code> · <code>Winning</code> — plus two override states (<code>On Strategy</code>, <code>Late Not Lost</code>) and one abort state (<code>Inconclusive</code>). An agent that only ever says "me or market" is wrong about a third of the time.</p>
     </div>
-  </div>
-
-  <h3>Contract rules — enforced in code, not prompts</h3>
-  <ol class="rules">
-    <li>The engine emits a <code>VerdictPayload</code>. The LLM receives <strong>only</strong> that payload — never raw pacing arrays.</li>
-    <li><code>template_id</code> is chosen by the engine. The LLM renders the template it is given.</li>
-    <li>Every number must be present verbatim in the payload as a pre-formatted string (<code>"52%"</code>, <code>"16 percentage points"</code>). The LLM copies, never formats.</li>
-    <li><strong>Post-generation validator:</strong> regex-extract every numeric token from LLM output and assert set-membership in <code>rendered_values</code>. Any token not found → discard, emit <code>fallback_text</code>, log <code>NARRATION_DRIFT</code>.</li>
-    <li>The engine is independently testable. The eval scorecard scores the engine, not the prose. Consistency is structurally guaranteed for verdict and confidence.</li>
-  </ol>
-
-  <div class="callout warn">
-    <div class="callout-title">Why this matters for the demo</div>
-    <p>The refusal case (Scenario 5) only lands if the audience believes the agent <em>cannot</em> be talked into a verdict. A model that decides is a model that can be persuaded. A rules engine cannot.</p>
+    <div class="principle-card">
+      <div class="principle-num">3</div>
+      <p><strong>Pace-matched, always.</strong> Every STLY comparison is on-the-books-now vs on-the-books-at-the-same-lead-time-last-year — never vs final realized STLY. This one rule prevents the most common false alarm.</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">4</div>
+      <p><strong>Customer-safe by default.</strong> SCs forward the output. No comp identities, no owner-block snark, language that survives a paste into a customer email.</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">5</div>
+      <p><strong>Diagnose, don't solve.</strong> Scope is the verdict + the <em>lever</em>, not a solution engine. We point at "relax min-stay here" / "DSO X% on this range," we don't build the fix.</p>
+    </div>
   </div>
   </div><!-- /ai-answers -->
 </section>
 
 <hr>
 
-<!-- ══════════════ SECTION 2: OPEN DECISIONS ══════════════ -->
-<section id="decisions">
+<!-- ══════════════ SECTION 2: PIPELINE ══════════════ -->
+<section id="pipeline">
   <div class="section-eyebrow">Section 2</div>
-  <h2>Resolutions for the 3 open decisions</h2>
-  <p class="section-desc">All three blocking items from the hackathon plan are now locked. These replace the original unsigned, overlapping bands.</p>
-
-  <h3>Decision #1 — Signed gap &amp; verdict logic</h3>
-  <p>Gap is signed. Bands are half-open, mutually exclusive, compared on values rounded to 1dp before banding (round-half-away-from-zero).</p>
-
-  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 18px;margin:14px 0 20px;font-family:var(--mono);font-size:13px;color:var(--text2);">
-    gap_pp = listing_occupancy_pct − compset_avg_occupancy_pct
-  </div>
-
-  <div class="gap-table">
-    <div class="gap-row header">
-      <span>Signed gap (gap_pp)</span>
-      <span>Verdict code</span>
-      <span>Action implied</span>
-    </div>
-    <div class="gap-row">
-      <span class="gap-code">gap ≤ −10.0</span>
-      <span><span class="vp vp-red">LISTING_ISSUE</span></span>
-      <span class="gap-action">Yes — investigate the listing</span>
-    </div>
-    <div class="gap-row">
-      <span class="gap-code">−10.0 &lt; gap ≤ −5.0</span>
-      <span><span class="vp vp-amber">MIXED_LEANING_LISTING</span></span>
-      <span class="gap-action">Yes — soft recommendation</span>
-    </div>
-    <div class="gap-row">
-      <span class="gap-code">−5.0 &lt; gap &lt; +5.0</span>
-      <span><span class="vp vp-green">MARKET</span></span>
-      <span class="gap-action">Yes — market-level lever</span>
-    </div>
-    <div class="gap-row">
-      <span class="gap-code">gap ≥ +5.0</span>
-      <span><span class="vp vp-blue">OUTPERFORMING</span></span>
-      <span class="gap-action"><strong>No action</strong> — terminal branch</span>
-    </div>
-  </div>
-
-  <div class="callout info">
-    <div class="callout-title">Outperforming is a terminal branch</div>
-    <p>At <code>gap ≥ +5pp</code> the engine stops — no override check, no next step, <code>next_step_id = NONE</code>. The trigger question is "why are my bookings slow." A listing beating its comp set isn't slow. OUTPERFORMING is a pass on the scorecard, not a miss.</p>
-  </div>
-
-  <hr style="margin:36px 0">
-
-  <h3>Decision #2 — Aggregate-signal override rule</h3>
-  <p>Catches the shared-comp-set-problem case: headline gap says "listing issue," but the comp set is also down against its own history — the comparison baseline has collapsed.</p>
-
-  <div class="table-wrap" style="margin-bottom:16px">
-    <table>
-      <thead><tr><th>Variable</th><th>Definition</th></tr></thead>
-      <tbody>
-        <tr><td><code>member_delta_i</code></td><td><code>member_pacing_i − member_historical_avg_i</code> (signed pp)</td></tr>
-        <tr><td><code>member_is_soft_i</code></td><td><code>member_delta_i &lt;= −5.0</code></td></tr>
-        <tr><td><code>soft_ratio</code></td><td><code>count(member_is_soft) / count(members_with_valid_baseline)</code></td></tr>
-        <tr><td><code>baseline_coverage</code></td><td><code>count(members_with_valid_baseline) / comp_set_size</code></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p>The override rule runs only when <code>verdict_code ∈ {LISTING_ISSUE, MIXED_LEANING_LISTING}</code>:</p>
-
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Condition</th><th>Result</th></tr></thead>
-      <tbody>
-        <tr><td>Verdict is MARKET, OUTPERFORMING, or REFUSED</td><td>No-op — terminal branches never reach here</td></tr>
-        <tr><td><code>baseline_coverage &lt; 0.50</code></td><td>Downgrade confidence one step; keep verdict</td></tr>
-        <tr><td><code>soft_ratio &lt; 0.60</code></td><td>Headline stands — no override</td></tr>
-        <tr><td><code>soft_ratio ≥ 0.60</code> AND verdict is LISTING_ISSUE AND <code>gap &lt;= −15pp</code></td><td>Soften to <span class="vp vp-amber">MIXED_LEANING_LISTING</span>, cap confidence at MEDIUM</td></tr>
-        <tr><td><code>soft_ratio ≥ 0.60</code> AND verdict is LISTING_ISSUE AND <code>gap &gt; −15pp</code></td><td>Override to <span class="vp vp-green">MARKET_SHARED_SOFTNESS</span>, cap confidence at MEDIUM</td></tr>
-        <tr><td><code>soft_ratio ≥ 0.60</code> AND verdict is MIXED_LEANING_LISTING</td><td>Override to <span class="vp vp-green">MARKET_SHARED_SOFTNESS</span>, cap confidence at MEDIUM</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="callout info">
-    <div class="callout-title">Override is strictly one-directional</div>
-    <p>The override can only move a verdict toward "market." It can never escalate a market call into a listing call. The confidence cap to MEDIUM applies only on the override path — scenarios 1–3 (no override fired) retain HIGH.</p>
-  </div>
-
-  <hr style="margin:36px 0">
-
-  <h3>Decision #3 — Single listing vs. group rollup</h3>
-  <p><strong>Per-listing evaluation, then composition-based rollup. Do not aggregate pacing first.</strong> Averaging pacing across the group hides a few bleeding listings inside a healthy group — the exact case the spec worries about.</p>
-
-  <div class="table-wrap" style="margin-bottom:16px">
-    <table>
-      <thead><tr><th>Problem share (exposure-weighted)</th><th>Group verdict</th></tr></thead>
-      <tbody>
-        <tr><td><code>share ≥ 0.60</code></td><td><span class="vp vp-red">GROUP_LISTING_ISSUE</span> — concentrated listing-side problem</td></tr>
-        <tr><td><code>0.25 ≤ share &lt; 0.60</code></td><td><span class="vp vp-amber">GROUP_MIXED</span> — Scenario 8: mixed portfolio</td></tr>
-        <tr><td><code>share &lt; 0.25</code></td><td><span class="vp vp-green">GROUP_MARKET</span> — healthy group in a soft market</td></tr>
-        <tr><td>Coverage gate: <code>eligible_weight / total_weight &lt; 0.60</code></td><td><span class="vp vp-gray">REFUSED_GROUP_COVERAGE</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p><strong>Mandatory breakdown</strong> in every group output: per-listing table sorted by <code>weight_i × |gap_pp|</code> (largest revenue exposure first), capped at 10 rows. For GROUP_MIXED, the breakdown <em>is</em> the answer. Scenarios 7 and 8 are now unblocked.</p>
-</section>
-
-<hr>
-
-<!-- ══════════════ SECTION 3: FLOWCHART ══════════════ -->
-<section id="flowchart">
-  <div class="section-eyebrow">Section 3</div>
-  <h2>Deterministic logic flowchart</h2>
-  <p class="section-desc">Step-by-step logic from trigger to verdict. Pre-flight checks fail fast — first match wins.</p>
-
-  <h3>Single listing path</h3>
-  <div class="flowchart-wrap">
-    <svg class="svg-fc" viewBox="0 0 700 820" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
-      <defs>
-        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M2 1L8 5L2 9" fill="none" stroke="#5a5f70" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-        <marker id="arr-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M2 1L8 5L2 9" fill="none" stroke="#3ecf8e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-        <marker id="arr-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M2 1L8 5L2 9" fill="none" stroke="#e05a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-        <marker id="arr-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M2 1L8 5L2 9" fill="none" stroke="#f6a623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-        <marker id="arr-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M2 1L8 5L2 9" fill="none" stroke="#5b8def" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-        <marker id="arr-p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M2 1L8 5L2 9" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </marker>
-      </defs>
-
-      <!-- TRIGGER -->
-      <rect x="200" y="20" width="300" height="40" rx="8" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
-      <text x="350" y="36" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="500">TRIGGER</text>
-      <text x="350" y="50" text-anchor="middle" fill="#a78bfa" font-size="10">"Why are bookings slow for [window]?"</text>
-
-      <!-- Arrow down -->
-      <line x1="350" y1="60" x2="350" y2="82" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-
-      <!-- PREFLIGHT CHECKS — stacked with refusals branching right -->
-
-      <!-- Check 1: Scope -->
-      <rect x="220" y="84" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
-      <text x="350" y="98" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #1</text>
-      <text x="350" y="112" text-anchor="middle" fill="#5b8def" font-size="10">Scope unambiguous?</text>
-      <!-- Refuse right -->
-      <line x1="480" y1="102" x2="540" y2="102" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="488" y="98" fill="#e05a5a" font-size="9">No</text>
-      <rect x="540" y="84" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
-      <text x="610" y="102" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">ASK_SCOPE</text>
-      <!-- Down arrow -->
-      <line x1="350" y1="120" x2="350" y2="142" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="358" y="134" fill="#3ecf8e" font-size="9">Yes</text>
-
-      <!-- Check 2: Comp set -->
-      <rect x="220" y="144" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
-      <text x="350" y="158" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #2</text>
-      <text x="350" y="172" text-anchor="middle" fill="#5b8def" font-size="10">Comp set defined?</text>
-      <line x1="480" y1="162" x2="540" y2="162" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="488" y="158" fill="#e05a5a" font-size="9">No</text>
-      <rect x="540" y="144" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
-      <text x="610" y="162" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_NO_COMPSET</text>
-      <line x1="350" y1="180" x2="350" y2="202" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="358" y="194" fill="#3ecf8e" font-size="9">Yes</text>
-
-      <!-- Check 3: Listing age -->
-      <rect x="220" y="204" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
-      <text x="350" y="218" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #3</text>
-      <text x="350" y="232" text-anchor="middle" fill="#5b8def" font-size="10">Listing age ≥ 90 days?</text>
-      <line x1="480" y1="222" x2="540" y2="222" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="488" y="218" fill="#e05a5a" font-size="9">No</text>
-      <rect x="540" y="204" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
-      <text x="610" y="222" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_NEW_LISTING</text>
-      <line x1="350" y1="240" x2="350" y2="262" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="358" y="254" fill="#3ecf8e" font-size="9">Yes</text>
-
-      <!-- Check 4: Comp set size -->
-      <rect x="220" y="264" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
-      <text x="350" y="278" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #4</text>
-      <text x="350" y="292" text-anchor="middle" fill="#5b8def" font-size="10">Comp set size ≥ 3?</text>
-      <line x1="480" y1="282" x2="540" y2="282" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="488" y="278" fill="#e05a5a" font-size="9">No</text>
-      <rect x="540" y="264" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
-      <text x="610" y="282" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_SMALL_COMPSET</text>
-      <line x1="350" y1="300" x2="350" y2="322" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="358" y="314" fill="#3ecf8e" font-size="9">Yes</text>
-
-      <!-- Check 5: Window -->
-      <rect x="220" y="324" width="260" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
-      <text x="350" y="338" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Pre-flight #5</text>
-      <text x="350" y="352" text-anchor="middle" fill="#5b8def" font-size="10">Window ≤ 180 days out?</text>
-      <line x1="480" y1="342" x2="540" y2="342" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
-      <text x="484" y="338" fill="#f6a623" font-size="9">No</text>
-      <rect x="540" y="324" width="140" height="36" rx="6" fill="rgba(246,166,35,0.1)" stroke="rgba(246,166,35,0.25)" stroke-width="1"/>
-      <text x="610" y="338" text-anchor="middle" fill="#f6a623" font-size="10" font-weight="500">far_window_caveat = true</text>
-      <text x="610" y="352" text-anchor="middle" fill="#f6a623" font-size="9">cap confidence MEDIUM</text>
-      <line x1="350" y1="360" x2="350" y2="382" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="358" y="374" fill="#3ecf8e" font-size="9">Yes</text>
-
-      <!-- READ DATA -->
-      <rect x="210" y="384" width="280" height="36" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
-      <text x="350" y="398" text-anchor="middle" fill="#e8eaf0" font-size="10" font-weight="500">READ pacing data</text>
-      <text x="350" y="412" text-anchor="middle" fill="#8b90a0" font-size="9">listing occ · comp set occ · ADR · baselines</text>
-      <line x1="480" y1="402" x2="540" y2="402" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="484" y="398" fill="#e05a5a" font-size="9">Fail</text>
-      <rect x="540" y="384" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
-      <text x="610" y="402" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_DATA_UNAVAIL</text>
-      <line x1="350" y1="420" x2="350" y2="442" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-
-      <!-- COMPUTE GAP -->
-      <rect x="220" y="444" width="260" height="36" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
-      <text x="350" y="458" text-anchor="middle" fill="#e8eaf0" font-size="10" font-weight="500">Compute gap_pp</text>
-      <text x="350" y="472" text-anchor="middle" fill="#8b90a0" font-size="9">listing_occ − compset_avg_occ (1dp, signed)</text>
-      <line x1="350" y1="480" x2="350" y2="500" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-
-      <!-- BAND SPLIT — 4 outcomes fanning out -->
-      <text x="350" y="510" text-anchor="middle" fill="#8b90a0" font-size="9">Band gap_pp</text>
-
-      <!-- gap >= +5 → OUTPERFORMING (far left) -->
-      <line x1="350" y1="512" x2="100" y2="512" stroke="#5b8def" stroke-width="1"/>
-      <line x1="100" y1="512" x2="100" y2="530" stroke="#5b8def" stroke-width="1" marker-end="url(#arr-b)"/>
-      <text x="185" y="509" fill="#5b8def" font-size="9">gap ≥ +5</text>
-      <rect x="20" y="530" width="160" height="44" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.3)" stroke-width="1"/>
-      <text x="100" y="547" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">OUTPERFORMING</text>
-      <text x="100" y="561" text-anchor="middle" fill="#5b8def" font-size="9">terminal · no next step</text>
-      <!-- OUTPERFORMING goes to emit -->
-      <line x1="100" y1="574" x2="100" y2="770" stroke="#5b8def" stroke-width="0.5" stroke-dasharray="3 3"/>
-      <line x1="100" y1="770" x2="248" y2="770" stroke="#5b8def" stroke-width="0.5" stroke-dasharray="3 3" marker-end="url(#arr-b)"/>
-
-      <!-- -5 < gap < +5 → MARKET (left-center) -->
-      <line x1="350" y1="512" x2="225" y2="512" stroke="#3ecf8e" stroke-width="1"/>
-      <line x1="225" y1="512" x2="225" y2="530" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-g)"/>
-      <text x="235" y="509" fill="#3ecf8e" font-size="9">−5 to +5</text>
-      <rect x="150" y="530" width="150" height="44" rx="6" fill="rgba(62,207,142,0.1)" stroke="rgba(62,207,142,0.3)" stroke-width="1"/>
-      <text x="225" y="547" text-anchor="middle" fill="#3ecf8e" font-size="10" font-weight="500">MARKET</text>
-      <text x="225" y="561" text-anchor="middle" fill="#3ecf8e" font-size="9">no override</text>
-      <!-- MARKET to confidence -->
-      <line x1="225" y1="574" x2="225" y2="648" stroke="#3ecf8e" stroke-width="0.5" stroke-dasharray="3 3"/>
-      <line x1="225" y1="648" x2="248" y2="648" stroke="#3ecf8e" stroke-width="0.5" stroke-dasharray="3 3" marker-end="url(#arr-g)"/>
-
-      <!-- -10 < gap <= -5 → MIXED (right-center) -->
-      <line x1="350" y1="512" x2="475" y2="512" stroke="#f6a623" stroke-width="1"/>
-      <line x1="475" y1="512" x2="475" y2="530" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
-      <text x="403" y="509" fill="#f6a623" font-size="9">−10 to −5</text>
-      <rect x="400" y="530" width="150" height="44" rx="6" fill="rgba(246,166,35,0.1)" stroke="rgba(246,166,35,0.3)" stroke-width="1"/>
-      <text x="475" y="547" text-anchor="middle" fill="#f6a623" font-size="10" font-weight="500">MIXED_LEANING</text>
-      <text x="475" y="561" text-anchor="middle" fill="#f6a623" font-size="9">→ run override</text>
-      <line x1="475" y1="574" x2="475" y2="600" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
-
-      <!-- gap <= -10 → LISTING_ISSUE (far right) -->
-      <line x1="350" y1="512" x2="600" y2="512" stroke="#e05a5a" stroke-width="1"/>
-      <line x1="600" y1="512" x2="600" y2="530" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="548" y="509" fill="#e05a5a" font-size="9">≤ −10</text>
-      <rect x="525" y="530" width="150" height="44" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.3)" stroke-width="1"/>
-      <text x="600" y="547" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">LISTING_ISSUE</text>
-      <text x="600" y="561" text-anchor="middle" fill="#e05a5a" font-size="9">→ run override</text>
-      <line x1="600" y1="574" x2="600" y2="590" stroke="#e05a5a" stroke-width="1"/>
-      <line x1="600" y1="590" x2="477" y2="590" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-
-      <!-- OVERRIDE box -->
-      <rect x="365" y="592" width="160" height="36" rx="6" fill="rgba(246,166,35,0.12)" stroke="rgba(246,166,35,0.3)" stroke-width="1"/>
-      <text x="445" y="606" text-anchor="middle" fill="#f6a623" font-size="10" font-weight="500">Aggregate-signal override</text>
-      <text x="445" y="620" text-anchor="middle" fill="#f6a623" font-size="9">§2.2 — one-directional</text>
-      <line x1="445" y1="628" x2="350" y2="648" stroke="#f6a623" stroke-width="1" marker-end="url(#arr-a)"/>
-
-      <!-- CONFIDENCE box -->
-      <rect x="248" y="640" width="204" height="36" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
-      <text x="350" y="654" text-anchor="middle" fill="#e8eaf0" font-size="10" font-weight="500">Assign confidence</text>
-      <text x="350" y="668" text-anchor="middle" fill="#8b90a0" font-size="9">comp set size · match_quality · caps</text>
-      <line x1="350" y1="676" x2="350" y2="698" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-
-      <!-- CONFIDENCE == LOW? -->
-      <rect x="260" y="700" width="180" height="36" rx="6" fill="rgba(91,141,239,0.1)" stroke="rgba(91,141,239,0.25)" stroke-width="1"/>
-      <text x="350" y="714" text-anchor="middle" fill="#5b8def" font-size="10" font-weight="500">Confidence == LOW?</text>
-      <text x="350" y="728" text-anchor="middle" fill="#5b8def" font-size="9">after all caps &amp; downgrades</text>
-      <line x1="440" y1="718" x2="500" y2="718" stroke="#e05a5a" stroke-width="1" marker-end="url(#arr-r)"/>
-      <text x="446" y="714" fill="#e05a5a" font-size="9">Yes</text>
-      <rect x="500" y="700" width="140" height="36" rx="6" fill="rgba(224,90,90,0.1)" stroke="rgba(224,90,90,0.25)" stroke-width="1"/>
-      <text x="570" y="718" text-anchor="middle" fill="#e05a5a" font-size="10" font-weight="500">REFUSED_LOW_CONF</text>
-      <line x1="350" y1="736" x2="350" y2="758" stroke="#5a5f70" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="358" y="750" fill="#3ecf8e" font-size="9">No</text>
-
-      <!-- EMIT -->
-      <rect x="220" y="760" width="260" height="40" rx="8" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
-      <text x="350" y="776" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="500">Select template_id + next_step_id</text>
-      <text x="350" y="790" text-anchor="middle" fill="#a78bfa" font-size="10">Emit VerdictPayload → LLM Narrator</text>
-
-    </svg>
-  </div>
-
-  <h3>Pre-flight check order</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#</th><th>Check</th><th>Failure code</th><th>Why this order</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>Scope unambiguous (single vs. group)</td><td><code>ASK_SCOPE</code></td><td>Wrong scope invalidates everything downstream</td></tr>
-        <tr><td>2</td><td>Comp set exists on the account</td><td><code>REFUSED_NO_COMPSET</code></td><td>Cheapest check; flag before anything runs</td></tr>
-        <tr><td>3</td><td>Listing age ≥ 90 days</td><td><code>REFUSED_NEW_LISTING</code></td><td>No pacing baseline exists</td></tr>
-        <tr><td>4</td><td>Comp set size ≥ 3</td><td><code>REFUSED_SMALL_COMPSET</code></td><td>Hard floor; agent refuses to force a verdict</td></tr>
-        <tr><td>5</td><td>Window start ≤ 180 days out</td><td>Caveat (not refusal)</td><td>Sets <code>far_window_caveat</code>, caps confidence at MEDIUM</td></tr>
-        <tr><td>6</td><td>All required reads returned</td><td><code>REFUSED_DATA_UNAVAILABLE</code></td><td>Distinct from a business-rule refusal</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>Confidence assignment</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Condition</th><th>Confidence</th></tr></thead>
-      <tbody>
-        <tr><td>Comp set ≥ 5 AND <code>match_quality ≥ 0.70</code></td><td><span class="cp cp-high">HIGH</span></td></tr>
-        <tr><td>Comp set ≥ 5 AND <code>match_quality &lt; 0.70</code></td><td><span class="cp cp-med">MEDIUM</span></td></tr>
-        <tr><td>Comp set 3–4 listings</td><td><span class="cp cp-med">MEDIUM</span></td></tr>
-        <tr><td>Comp set &lt; 3 listings</td><td><span class="cp cp-low">LOW → refuse</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p style="font-size:13px">Apply caps in order: override cap (§2.2) → far-window cap → group coverage downgrade. LOW after any downgrade routes to <code>REFUSED_LOW_CONFIDENCE</code>.</p>
-
-</section>
-
-<hr>
-
-<!-- ══════════════ SECTION 4: API & DATA ══════════════ -->
-<section id="api">
-  <div class="section-eyebrow">Section 4</div>
-  <h2>Developer API &amp; data requirements</h2>
-  <p class="section-desc">All reads are read-only via masq. Map each row to the concrete PriceLabs MCP tool name in build hour 1.</p>
-
-  <h3>MCP / masq reads</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#</th><th>Capability</th><th>Inputs</th><th>Returns</th><th>Used for</th></tr></thead>
-      <tbody>
-        <tr><td>R1</td><td>Listing metadata</td><td><code>listing_id</code></td><td><code>created_at</code>, <code>name</code>, <code>market_id</code></td><td>Pre-flight #3</td></tr>
-        <tr><td>R2</td><td>Listing group membership</td><td><code>group_id</code></td><td><code>listing_id[]</code></td><td>Group scope</td></tr>
-        <tr><td>R3</td><td>Comp set definition</td><td><code>listing_id</code></td><td><code>comp_listing_id[]</code>, <code>match_quality</code></td><td>Pre-flight #2, #4, confidence</td></tr>
-        <tr><td>R4</td><td>Forward pacing — listing</td><td><code>listing_id</code>, window</td><td><code>occupancy_pct</code>, <code>available_nights</code></td><td><code>gap_pp</code>, <code>weight_i</code></td></tr>
-        <tr><td>R5</td><td>Forward pacing — comp members</td><td><code>comp_listing_id[]</code>, window</td><td>per-member <code>occupancy_pct</code></td><td>Comp set average, soft ratio</td></tr>
-        <tr><td style="color:var(--amber)">R6 ⚠</td><td>Historical baseline</td><td><code>listing_id[]</code>, <code>baseline_mode</code>, window</td><td><code>historical_avg_occupancy_pct</code>, <code>baseline_available</code></td><td>§2.2 override</td></tr>
-        <tr><td>R7</td><td>ADR — listing &amp; comp set</td><td><code>listing_id[]</code>, window</td><td><code>adr</code>, <code>currency</code></td><td>Supporting signal only</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="callout warn">
-    <div class="callout-title">R6 is the largest schedule risk</div>
-    <p>Per-member historical baselines gate Decision #2 entirely. Confirm MCP availability in build hour 1. If R6 has no surface, the override degrades to a confidence downgrade — agent still ships, Scenario 1 gets weaker. Cache all reads 15 min; target latency &lt; 8s.</p>
-  </div>
-
-  <h3>Inputs</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td><code>scope_type</code></td><td><code>"listing" | "group"</code></td><td>—</td><td>Must be explicit; else ASK_SCOPE</td></tr>
-        <tr><td><code>scope_id</code></td><td>string</td><td>—</td><td>listing_id or group_id</td></tr>
-        <tr><td><code>window_start</code></td><td>date</td><td>today + 1</td><td></td></tr>
-        <tr><td><code>window_end</code></td><td>date</td><td>today + 60</td><td></td></tr>
-        <tr><td><code>baseline_mode</code></td><td><code>"same_window_prior_year" | "trailing_equivalent"</code></td><td><code>same_window_prior_year</code></td><td>Falls back to trailing if prior year missing</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>Computed variables</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Variable</th><th>Formula</th></tr></thead>
-      <tbody>
-        <tr><td><code>compset_avg_occupancy_pct</code></td><td>Unweighted mean of member <code>occupancy_pct</code></td></tr>
-        <tr><td><code>gap_pp</code></td><td><code>listing_occupancy_pct − compset_avg_occupancy_pct</code>, rounded 1dp</td></tr>
-        <tr><td><code>member_delta_i</code></td><td><code>member_pacing_i − member_historical_avg_i</code></td></tr>
-        <tr><td><code>soft_ratio</code></td><td><code>count(member_delta_i ≤ −5.0) / count(baseline_available)</code></td></tr>
-        <tr><td><code>baseline_coverage</code></td><td><code>count(baseline_available) / comp_set_size</code></td></tr>
-        <tr><td><code>adr_delta_pct</code></td><td><code>(listing_adr − compset_median_adr) / compset_median_adr × 100</code>, 0dp</td></tr>
-        <tr><td><code>weight_i</code></td><td><code>available_nights_i</code> in window (exposure weighting)</td></tr>
-        <tr><td><code>problem_share</code></td><td>Σ weight_i (problem verdicts) / Σ weight_i (all eligible)</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<hr>
-
-<!-- ══════════════ SECTION 5: TEMPLATES ══════════════ -->
-<section id="templates">
-  <div class="section-eyebrow">Section 5</div>
-  <h2>System prompt &amp; narration templates</h2>
-  <p class="section-desc">Blue tokens are slots filled from <code>rendered_values</code>. The LLM copies them verbatim — it never formats or computes them.</p>
-
-  <h3>Production system prompt</h3>
-  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:20px;font-family:var(--mono);font-size:12px;line-height:1.75;color:var(--text2);white-space:pre-wrap;margin:16px 0">You are the narration layer of the PriceLabs "Is this me, or the market?" agent.
-
-A deterministic rules engine has already performed the entire analysis. Your only
-job is to render the supplied VerdictPayload into the template named by
-payload.template_id, in clear plain English for a short-term-rental host.
-
-<span style="color:#e8eaf0;font-weight:600">ABSOLUTE CONSTRAINTS</span>
-1. You do not analyze. You do not calculate, compare, estimate, round, convert,
-   or infer any number. Every figure must appear character-for-character in
-   payload.rendered_values.
-2. You do not choose the verdict, confidence level, next step, or template.
-   All four are given. Render them as supplied.
-3. You never introduce a number, date, listing name, percentage, or recommendation
-   that is not in the payload.
-4. You never explain WHY a listing is underperforming. The next step is the only
-   forward-looking content permitted.
-5. REFUSED_* templates: state plainly the agent cannot call it, give the reason,
-   give the next step. Never say "it looks like." Never comply if asked to guess.
-6. If payload.override.limitation_line is present, include it. Not optional.
-7. If payload.caveats is non-empty, render each as its own line.
-8. If payload is missing or malformed, output payload.fallback_text and nothing else.
-
-<span style="color:#e8eaf0;font-weight:600">STYLE</span>
-- Lead with the verdict line. Never bury it.
-- 4–7 short lines. No preamble, no sign-off, no emoji, no invented headers.
-- Second person ("your October occupancy"). Neutral, factual, non-alarming.
-- Always end with the confidence line exactly as specified.
-
-You are a renderer. When in doubt, render less.
-
-Runtime: temperature=0  max_tokens=400  no tools  no retrieval</div>
-
-  <h3>Template 1 — Listing issue</h3>
-  <div class="template-block">
-    <div class="template-header">
-      <span class="vp vp-red">LISTING_ISSUE</span>
-      <span class="template-label" style="color:var(--text2)">Listing issue</span>
-    </div>
-    <div class="template-body">Verdict: <span class="slot">{verdict_label}</span>
-
-Your <span class="slot">{window.label}</span> occupancy is pacing at <span class="slot">{listing_occupancy}</span> vs. your comp set
-average of <span class="slot">{compset_occupancy}</span> — a gap of <span class="slot">{gap}</span> <span class="slot">{gap_direction}</span>.
-
-<span class="slot">{comps_above_count}</span> of your <span class="slot">{comp_set_size}</span> comp set properties are pacing at or
-above the comp set average, so the market isn't soft.
-<span class="comment">[IF ADR_BELOW_MEDIAN]</span> Your ADR is also <span class="slot">{adr_delta}</span> <span class="slot">{adr_direction}</span> the comp set
-median for the same window.
-
-Next step: <span class="slot">{next_step.text}</span>
-
-Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size}</span> listings, <span class="slot">{confidence.reason}</span></div>
-  </div>
-
-  <h3>Template 2 — Market / in line</h3>
-  <div class="template-block">
-    <div class="template-header">
-      <span class="vp vp-green">MARKET</span>
-      <span class="template-label" style="color:var(--text2)">Market / in line</span>
-    </div>
-    <div class="template-body">Verdict: Market
-
-Your <span class="slot">{window.label}</span> occupancy is pacing at <span class="slot">{listing_occupancy}</span> vs. your comp set
-average of <span class="slot">{compset_occupancy}</span> — a <span class="slot">{gap}</span> gap, within normal variance.
-
-<span class="slot">{soft_member_count}</span> of your <span class="slot">{comp_set_size}</span> comp set properties are also pacing below
-their own historical <span class="slot">{window.label}</span> averages. This is market-wide.
-
-Next step: <span class="slot">{next_step.text}</span>
-
-Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size}</span> listings, <span class="slot">{confidence.reason}</span>
-
-<span class="comment">--- MARKET_SHARED_SOFTNESS variant adds before Next step ---</span>
-Limitation: your comp set is also down against its own history, so this is a
-comparison-baseline reading rather than a confident market call.</div>
-  </div>
-
-  <h3>Template 3 — Mixed</h3>
-  <div class="template-block">
-    <div class="template-header">
-      <span class="vp vp-amber">MIXED_LEANING_LISTING</span>
-      <span class="template-label" style="color:var(--text2)">Mixed</span>
-    </div>
-    <div class="template-body">Verdict: Mixed — leaning <span class="slot">{mixed_lean}</span>
-
-Your <span class="slot">{window.label}</span> occupancy is pacing at <span class="slot">{listing_occupancy}</span> vs. your comp set
-average of <span class="slot">{compset_occupancy}</span> — a gap of <span class="slot">{gap}</span> <span class="slot">{gap_direction}</span>. That's larger
-than normal variance but not large enough to rule out market softness.
-
-<span class="slot">{soft_member_count}</span> of your <span class="slot">{comp_set_size}</span> comp set properties are also pacing below
-their own historical averages.
-<span class="comment">[IF override.limitation_line]</span> <span class="slot">{override.limitation_line}</span>
-
-Next step: <span class="slot">{next_step.text}</span>
-
-Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size}</span> listings, <span class="slot">{confidence.reason}</span>
-
-<span class="comment">--- GROUP_MIXED appends (engine-rendered, copied verbatim) ---</span>
-Breakdown by listing:
-  <span class="slot">{name}</span>  <span class="slot">{gap_pp}</span>  <span class="slot">{verdict_label}</span>  <span class="slot">{confidence.level}</span>
-  ... (max 10 rows, then "+{n} more")</div>
-  </div>
-
-  <h3>Template 4 — Graceful refusal</h3>
-  <div class="template-block">
-    <div class="template-header">
-      <span class="vp vp-gray">REFUSED_*</span>
-      <span class="template-label" style="color:var(--text2)">Cannot call it</span>
-    </div>
-    <div class="template-body">Verdict: Cannot call it
-
-<span class="slot">{refusal_statement}</span>
-
-Next step: <span class="slot">{next_step.text}</span>
-
-Confidence: <span class="slot">{confidence.level}</span> · Comp set: <span class="slot">{comp_set_size_or_none}</span></div>
-  </div>
-
-  <h3>Refusal statement enum</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>template_id</th><th>Refusal statement</th><th>next_step.id</th></tr></thead>
-      <tbody>
-        <tr><td><code>REFUSED_SMALL_COMPSET</code></td><td>Your {window} occupancy is pacing at {listing_occupancy}, but your comp set has only {comp_set_size} listings — below the threshold for a reliable comparison.</td><td><code>EXPAND_COMP_SET</code></td></tr>
-        <tr><td><code>REFUSED_NEW_LISTING</code></td><td>This listing is {listing_age_days} days old, so there's no pacing history to compare against. Without a baseline, any verdict would be a guess.</td><td><code>RECHECK_AFTER_90_DAYS</code></td></tr>
-        <tr><td><code>REFUSED_NO_COMPSET</code></td><td>No comp set is defined for this listing, so there's nothing to compare your pacing against.</td><td><code>DEFINE_COMP_SET</code></td></tr>
-        <tr><td><code>REFUSED_LOW_CONFIDENCE</code></td><td>The comparison ran, but the data isn't strong enough to stand behind a verdict: {confidence.reason}.</td><td><code>EXPAND_COMP_SET</code></td></tr>
-        <tr><td><code>REFUSED_DATA_UNAVAILABLE</code></td><td>Pacing data for this window couldn't be retrieved, so no comparison was possible.</td><td><code>NONE</code></td></tr>
-        <tr><td><code>REFUSED_GROUP_COVERAGE</code></td><td>Only {coverage_pct} of this group's inventory could be scored — too little to call a group-level verdict.</td><td><code>REVIEW_LISTING_SEGMENT</code></td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<hr>
-
-<!-- ══════════════ SECTION 6: SCORECARD ══════════════ -->
-<section id="scorecard">
-  <div class="section-eyebrow">Section 6</div>
-  <h2>Scorecard mapping &amp; build notes</h2>
-  <p class="section-desc">All 8 eval scenarios mapped to expected engine paths. Scenarios 7 and 8 are now unblocked.</p>
-
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#</th><th>Scenario</th><th>Engine path</th><th>Expected template_id</th><th>Expected confidence</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>1</td><td>Bad listing, soft market</td>
-          <td>Band → MARKET, or override fires</td>
-          <td><code>MARKET</code> / <code>MARKET_SHARED_SOFTNESS</code></td>
-          <td><span class="cp cp-high">HIGH</span> / <span class="cp cp-med">MEDIUM</span> if overridden</td>
-        </tr>
-        <tr>
-          <td>2</td><td>Bad listing, strong market</td>
-          <td>Band → LISTING_ISSUE, <code>soft_ratio &lt; 0.60</code></td>
-          <td><code>LISTING_ISSUE</code></td>
-          <td><span class="cp cp-high">HIGH</span></td>
-        </tr>
-        <tr>
-          <td>3</td><td>Good listing, soft market</td>
-          <td>Band → MARKET</td>
-          <td><code>MARKET</code></td>
-          <td><span class="cp cp-high">HIGH</span></td>
-        </tr>
-        <tr>
-          <td>4</td><td>Comp set 3–4</td>
-          <td>§3.3 row 3</td>
-          <td>Any verdict</td>
-          <td><span class="cp cp-med">MEDIUM</span></td>
-        </tr>
-        <tr>
-          <td>5</td><td>Comp set &lt; 3</td>
-          <td>Pre-flight #4</td>
-          <td><code>REFUSED_SMALL_COMPSET</code></td>
-          <td><span class="cp cp-low">LOW</span></td>
-        </tr>
-        <tr>
-          <td>6</td><td>New listing (&lt;90 days)</td>
-          <td>Pre-flight #3</td>
-          <td><code>REFUSED_NEW_LISTING</code></td>
-          <td>N/A</td>
-        </tr>
-        <tr>
-          <td>7</td><td>Large group</td>
-          <td>§2.3 rollup</td>
-          <td><code>GROUP_*</code> + breakdown</td>
-          <td>min() rule</td>
-        </tr>
-        <tr>
-          <td>8</td><td>Mixed portfolio</td>
-          <td>§2.3, <code>0.25 ≤ share &lt; 0.60</code></td>
-          <td><code>GROUP_MIXED</code> + breakdown</td>
-          <td>min() rule</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <h2>Relationship to the Account Review Helper &amp; the pipeline</h2>
+  <p class="section-desc">The shipped Account Review logic is our verdict <em>primitive</em>. We adopt its core check and thresholds verbatim. We do not rebuild it — the agent is the pace-matching layer before it and the RM judgment layer after it.</p>
 
   <div class="callout danger">
-    <div class="callout-title">Consistency pass: 5/5, not 4/5</div>
-    <p><code>verdict_code</code> and <code>confidence.level</code> must match 5/5 across fresh sessions against the same account. Any variance = non-determinism in data reads or banding = bug, not tolerance. Narration wording may vary; the numeric validator must pass 5/5.</p>
+    <div class="callout-title">🟥 Blocking pre-req — Verification #1</div>
+    <p>Confirm whether the Account Review core check <strong>pace-matches STLY at equal lead time</strong> for future months, or compares against final realized STLY. If it does not pace-match, we must pace-match upstream and feed it matched numbers. <strong>Owner: Revanth (with Anish). Nothing downstream is trustworthy until this is answered.</strong></p>
   </div>
 
-  <h3>All tunable thresholds — one config block</h3>
-  <div class="config-grid">
-    <div class="config-item"><div class="config-key">GAP_LISTING_PP</div><div class="config-val">−10.0</div></div>
-    <div class="config-item"><div class="config-key">GAP_MIXED_PP</div><div class="config-val">−5.0</div></div>
-    <div class="config-item"><div class="config-key">GAP_OUTPERFORM_PP</div><div class="config-val">+5.0</div></div>
-    <div class="config-item"><div class="config-key">SOFT_MEMBER_THRESHOLD_PP</div><div class="config-val">−5.0</div></div>
-    <div class="config-item"><div class="config-key">SOFT_RATIO_TRIGGER</div><div class="config-val">0.60</div></div>
-    <div class="config-item"><div class="config-key">SEVERE_GAP_PP</div><div class="config-val">−15.0</div></div>
-    <div class="config-item"><div class="config-key">MIN_BASELINE_COVERAGE</div><div class="config-val">0.50</div></div>
-    <div class="config-item"><div class="config-key">GROUP_PROBLEM_HIGH</div><div class="config-val">0.60</div></div>
-    <div class="config-item"><div class="config-key">GROUP_PROBLEM_LOW</div><div class="config-val">0.25</div></div>
-    <div class="config-item"><div class="config-key">GROUP_MIN_COVERAGE</div><div class="config-val">0.60</div></div>
-    <div class="config-item"><div class="config-key">MATCH_QUALITY_HIGH</div><div class="config-val">0.70</div></div>
-    <div class="config-item"><div class="config-key">FAR_WINDOW_DAYS</div><div class="config-val">180</div></div>
-    <div class="config-item"><div class="config-key">MIN_LISTING_AGE_DAYS</div><div class="config-val">90</div></div>
+  <h3>The pipeline</h3>
+  <pre><code>0.  Resolve scope        (entity, stay-window, KPI)
+1.  Pull data spine      (pace-matched 4-number block + signals)   ← we pace-match here
+2.  Validity gates       (set confidence multipliers; abort thin windows)
+3.  Validate the claim   (core check) → maybe "No Slump", stop
+4.  Core check           (Account Review thresholds, verbatim) → Under / At Par / Over
+5.  Market overlay       → Me / Market / Mixed / Winning
+6.  RevPAR overlay       (Account Review §5) → catch market-wide decline &amp; the win-that-isn't
+7.  Booking-window veto  → On Strategy / Late Not Lost          ← not in the helper
+8.  Mechanism decompose  (only if a "me" component) — Kyle order  ← not in the helper
+9.  Segment              (weekday/weekend, per sub-window, events)
+10. Confidence score     (graduated, deterministic)             ← not in the helper
+11. Narrate              (LLM → customer-safe output contract)</code></pre>
+  <p style="font-size:13px">Stages 4–6 are the helper running as-is. Stages 7, 8, 10 are the RM transcript logic. Stage 1 is where the two worldviews get reconciled.</p>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 3: STAGES ══════════════ -->
+<section id="stages">
+  <div class="section-eyebrow">Section 3</div>
+  <h2>Stage-by-stage logic</h2>
+  <p class="section-desc">Every stage of the pipeline, in order — scope resolution through the customer-safe output contract.</p>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 0</span>
+    <h3 style="margin-top:0">Resolve scope</h3>
+    <p><strong>User inputs:</strong> entity (listing / group / comp-set level), stay-date range, KPI.</p>
+    <ul class="plain">
+      <li>KPI defaults to <strong>occupancy</strong> but we ask, because RevPAR-driven users get a different verdict from the same data. Store the choice; it sets the primary axis.</li>
+      <li>🟥 <strong>Decision:</strong> confirm the input surface — chat interface with date-range + entity picker (dropdown for listing/group/comp level). <em>Owner: Shail / front-end.</em></li>
+    </ul>
   </div>
 
-  <h3>Assumptions to confirm before hour 1 ends</h3>
-  <div style="border:1px solid var(--border2);border-radius:10px;padding:0 16px;margin:16px 0">
+  <div class="stage-block">
+    <span class="stage-num">Stage 1</span>
+    <h3 style="margin-top:0">Data spine (pace-matched)</h3>
+    <p>Per window, for the chosen KPI, pull four numbers:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Number</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Listing — on the books now</td></tr>
+          <tr><td>2</td><td>Listing — STLY at matched lead time</td></tr>
+          <tr><td>3</td><td>Comp set — on the books now</td></tr>
+          <tr><td>4</td><td>Comp set — STLY at matched lead time</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Supporting signals</strong> pulled alongside: listing &amp; market booking window (current + STLY), 7/14/30-day pickup (listing + market), ADR index, RevPAR index, min-stay settings, sync status / system alerts, comp-set count, base-price tier setting.</p>
+    <div class="callout danger">
+      <div class="callout-title">🟥 Decision — data source</div>
+      <p>Report Builder API only exposes user-created templates. Revanth to confirm with Anish whether we get direct Report Builder API access so we can pull the pace-matched spine for <em>any</em> listing/window, not just pre-built templates.</p>
+    </div>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 2</span>
+    <h3 style="margin-top:0">Validity gates (run before any verdict)</h3>
+    <p>Each gate adjusts confidence; some abort a window. Skipping these is what gets a verdict laughed out of a review.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Gate</th><th>Rule</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Comp-set size</td><td>≥120 comps → full trust. &lt;120 → dampen market weight (sliding). Large-unit dilution (e.g. 7–8BR pulling in 2–5BR) → flag.</td><td>Confidence multiplier</td></tr>
+          <tr><td>Like-to-like</td><td>Compare vs STLY only if listing had ≥15 bookable nights at this point LY and this year. Else market-only.</td><td>Drops STLY axis if failed</td></tr>
+          <tr><td>Market-data sanity</td><td>Detect phantom occupancy — owner blocks read as occupancy in ski/off-season markets (the Vermont-Nov "7% that's really 0%" case). Flag thin future data.</td><td>Suppress market axis for that window</td></tr>
+          <tr><td>Sync / alerts</td><td>Stale sync or active system alerts</td><td>Warn — data may be wrong before logic runs</td></tr>
+          <tr><td>Comp-tier representativeness</td><td>If comps skew to one tier, ADR index is unreliable</td><td>Down-weight ADR-based mechanism calls</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout danger">
+      <div class="callout-title">🟥 Decision — thresholds</div>
+      <p>Like-to-like uses <strong>15 bookable nights</strong> (from the helper). Comp trust floor <strong>120</strong> (Revanth). Confirm both, and define the sliding-dampening curve below 120.</p>
+    </div>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 3</span>
+    <h3 style="margin-top:0">Validate the claim</h3>
+    <p>The RM's first move (Soumyadeep): a large share of "I'm slow" users are pacing fine or ahead. Run the core check; if the listing is at/above <strong>both</strong> its STLY pace and market pace → <span class="vp vp-green">No Slump</span>, return the proof table, stop. Target: ~⅓ of tickets exit here. The "why" in "why am I slow" is an <em>implicit claim we test</em>, not a fact we accept.</p>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 4</span>
+    <h3 style="margin-top:0">Core check (Account Review thresholds, verbatim)</h3>
+    <p><strong>Path A — has STLY</strong> (skip → At Par if STLY occ &lt; 5%):</p>
+    <pre><code>listing_%chg = listing_now − listing_STLY
+market_%chg  = market_now  − market_STLY
+diff         = listing_%chg − market_%chg
+  diff &lt; −5pp → Underperforming
+  diff &gt; +5pp → Overperforming
+  else        → At Par
+(if market side missing: use listing_%chg vs STLY alone, ±5pp)</code></pre>
+    <p><strong>Path B — no STLY / market-only</strong> (skip → At Par if market occ &lt; 5%):</p>
+    <pre><code>listing &gt; 2pp below market AND relative gap worse than −5%  → Underperforming
+listing 5%+ above market                                    → Overperforming
+else                                                         → At Par</code></pre>
+    <p><code>diff</code> is our me-vs-market magnitude, already computable: the <strong>self-inflicted component = |diff| beyond the market move</strong>. No new math needed.</p>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 5</span>
+    <h3 style="margin-top:0">Market-direction overlay (3 labels → 5 states)</h3>
+    <p>Overlay <code>market_%chg</code> direction onto the core-check label:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Core check</th><th>Market direction</th><th>Verdict</th><th>Magnitude reported</th></tr></thead>
+        <tbody>
+          <tr><td>At Par</td><td>Down</td><td><span class="vp vp-amber">Market</span></td><td>market = market_%chg</td></tr>
+          <tr><td>At Par</td><td>Flat / up</td><td><span class="vp vp-green">No Slump</span></td><td>— (return proof, stop)</td></tr>
+          <tr><td>Under</td><td>Flat / up</td><td><span class="vp vp-red">Me</span></td><td>me = |diff|</td></tr>
+          <tr><td>Under</td><td>Down</td><td><span class="vp vp-purple">Mixed</span></td><td>market = market_%chg; me = |diff| beyond it</td></tr>
+          <tr><td>Over</td><td>any</td><td><span class="vp vp-blue">Winning</span></td><td>run overpricing / RevPAR caution</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px">The Mixed decomposition ("market down 6pts, you're down 19, the 13 are yours") is the line that makes the verdict actionable instead of a shrug.</p>
+    <div class="callout info">
+      <div class="callout-title">Market pickup as corroboration (Kyle)</div>
+      <p>The market direction above is read from occupancy pace (<code>market_%chg</code>). Corroborate it with <strong>market pickup</strong>: if market 14/30-day pickup is low across the board, that reinforces a Market/Mixed call; if the market is still picking up healthily while the listing isn't, that pushes toward Me. Pickup agreement/disagreement also feeds Stage 10 confidence.</p>
+    </div>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 6</span>
+    <h3 style="margin-top:0">RevPAR overlay (Account Review §5 On-Track logic)</h3>
+    <p>Applied as a guardrail on <strong>every</strong> verdict, even when occupancy is the chosen KPI:</p>
+    <ul class="plain">
+      <li><strong>Market-wide decline:</strong> not underperforming but RevPAR &lt; 95% STLY, and market also down → confirm Market, not a listing problem.</li>
+      <li><strong>Win-that-isn't:</strong> occupancy looks strong but RevPAR &lt; 95% STLY (LOS/discount crush) → do not report Winning; flag RevPAR-negative. (Soumyadeep's LOS trap.)</li>
+      <li><strong>Priced-out masquerading as low ADR:</strong> occupancy low, ADR already below STLY, still underperforming → prices went so high bookings stopped; visible ADR is 1–2 cheap days. Detect via booking-window collapse. Do not recommend dropping price further.</li>
+    </ul>
+    <p style="font-size:13px">RevPAR On-Track floor = <strong>95% of STLY RevPAR</strong> (verbatim from helper §5).</p>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 7</span>
+    <h3 style="margin-top:0">Booking-window veto (not in the helper)</h3>
+    <p>The helper <em>will</em> stamp the fall-foliage listing "Underperforming" because it's below market — the exact case that is actually fine. Guard it:</p>
+    <p><strong>If</strong> listing booking window is materially shorter than market's <strong>and</strong> it was similarly short STLY (established pattern, not new) <strong>and</strong> LY final occupancy hit target → downgrade Me → <span class="vp vp-blue">On Strategy — monitor, re-check by [date]</span>.</p>
+    <p><strong>Pickup cross-check:</strong> if bookings are still arriving (14/30-day pickup healthy) but late relative to the average window → <span class="vp vp-purple">Late Not Lost</span>, distinct from both Me and Market.</p>
+    <p style="font-size:13px">Booking-window reference points (Kyle): 50%-by-market-booking-window rule; monitor from 180 days out for ~90-day windows; a shrinking average lead time signals a market trend. Use 14/30-day pickup as primary; 7-day alone is noise (post-holiday lulls).</p>
+    <div class="callout info">
+      <div class="callout-title">The average is one number — read the shape around it (Kyle)</div>
+      <p>The booking window is an average, so don't judge off it alone: if the window is 30 days, look at what's happening 60 days out too. Are bookings landing within, ahead of, or behind the average window? That distribution is what distinguishes a genuine slowdown from a normal lead-time pattern, and it's the input to the Late Not Lost call above.</p>
+    </div>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 8</span>
+    <h3 style="margin-top:0">Mechanism decomposition (only if a "me" component)</h3>
+    <p>Cheapest-and-most-visible first (Kyle: visibility supersedes pricing). Price is <em>last</em>.</p>
+    <ol class="plain">
+      <li><strong>Visibility / availability.</strong> Sync active? Owner blocks? Min-stay wall (4-night min on a 2-night market)? Orphan gaps unfillable under current min-stay?</li>
+      <li><strong>Settings.</strong> Recommended settings on? Base-price tier realistic (luxury tag on a standard unit)? Far-out premium (PL 61+ day) pricing out before the window opens → missing early bookings? Aggressive LOS / OBA / step-OBA / stacked PSOs?</li>
+      <li><strong>Price position.</strong> ADR index vs comp set — against booked ADR where possible, read against tier (luxury &gt;100 expected, budget &lt;100). MPI ~70 + ADR index ~115 = priced-out with a number on it.</li>
+      <li><strong>Conversion residual.</strong> Priced at/below comps and still not booking → price is <strong>not</strong> the lever. Flag listing quality / reviews / photos / ranking / new supply cluster, and say "not a pricing problem." Refusing the reflexive discount here is what separates us from a naive tool.</li>
+    </ol>
+    <p style="font-size:13px"><strong>Overperformance caution:</strong> MPI well above 100 is not automatically good — flag possible underpricing / over-aggressive discounting.</p>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 9</span>
+    <h3 style="margin-top:0">Segmentation</h3>
+    <p>Run Stages 4–8 per <strong>weekday/weekend</strong> (day-of-week if available) and per <strong>sub-window</strong> (30/60/90 or per-month). It's routine to be market-soft in the next 30 and self-inflicted at 60–90, or fine weekdays and bleeding weekends. Call out <strong>events/holidays</strong> in range separately — for many users those windows <em>are</em> the account.</p>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 10</span>
+    <h3 style="margin-top:0">Confidence score (deterministic)</h3>
+    <p>Confidence is a <strong>product of the gates</strong>, not a feeling. Bucket to High/Medium/Low, put it on the verdict line.</p>
+    <p>Inputs: comp-set size (≥120 full; sliding penalty below; heavy penalty on large-unit dilution) · like-to-like available (both axes) vs market-only · lead-time / future-data thinness · market-data sanity (phantom-block risk) · comp-tier representativeness · <strong>signal agreement</strong> (do MPI, pace delta, and pickup all point the same way? 3-way agree = High; conflict = Medium at best).</p>
+    <p style="font-size:13px">A 2-listing account at 90 days out with 40 comps → <span class="cp cp-low">Inconclusive — Low, re-check in 14 days</span>. Saying so is a feature.</p>
+    <div class="callout danger">
+      <div class="callout-title">🟥 Decision</div>
+      <p>Exact weighting / formula for the score. Proposal: multiplicative gate penalties → 0–1 scalar → banded. Team to set band cutoffs.</p>
+    </div>
+  </div>
+
+  <div class="stage-block">
+    <span class="stage-num">Stage 11</span>
+    <h3 style="margin-top:0">Output contract</h3>
+    <ol class="plain">
+      <li><strong>Verdict line + confidence.</strong> e.g. "Mixed — market down 6 pts, you're down 19; the 13-pt gap is yours. Medium confidence."</li>
+      <li><strong>Evidence table</strong> — 3 rows (you / comp set / delta); columns: on-the-books occ, pace vs matched STLY, MPI, ADR index, RevPAR index, 14/30-day pickup. This is the screenshot the SC pastes to the customer.</li>
+      <li><strong>Per-window + weekday/weekend breakdown</strong>, a verdict each.</li>
+      <li><strong>Mechanism ranking</strong> (only if a me-component) with supporting numbers.</li>
+      <li><strong>Next steps</strong> — the lever only: relax min-stay on these dates / DSO X% on this range — never a base-price move that wrecks well-priced dates. (Kyle: DSO over base-price for period-specific lag.)</li>
+      <li><strong>What would change this call</strong> — re-check date + the 1–2 metrics that would flip it.</li>
+      <li><strong>Data caveats</strong> — comp count, listings excluded by like-to-like, whether STLY is fair.</li>
+    </ol>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 4: THRESHOLDS ══════════════ -->
+<section id="thresholds">
+  <div class="section-eyebrow">Section 4</div>
+  <h2>Threshold config block (single source of truth)</h2>
+  <p class="section-desc">Every tunable value in one place, with its source and confirmation status.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Param</th><th>Value</th><th>Source</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>STLY spread tolerance</td><td><code>±5 pp</code></td><td>Helper §1.3</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Min STLY occupancy</td><td><code>5%</code></td><td>Helper</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Min market occupancy</td><td><code>5%</code></td><td>Helper</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Market absolute diff</td><td><code>−2 pp</code></td><td>Helper</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Market relative under</td><td><code>−5%</code></td><td>Helper</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Market relative over</td><td><code>+5%</code></td><td>Helper</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>RevPAR On-Track floor</td><td><code>95% STLY RevPAR</code></td><td>Helper §5</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Like-to-like min nights</td><td><code>15</code></td><td>Helper §4</td><td><span class="vp vp-amber">confirm</span></td></tr>
+        <tr><td>Comp trust floor</td><td><code>120</code></td><td>Revanth</td><td><span class="vp vp-amber">confirm</span></td></tr>
+        <tr><td>Comp dampening curve &lt;120</td><td><code>TBD</code></td><td>—</td><td><span class="vp vp-red">🟥 define</span></td></tr>
+        <tr><td>Booking-window "materially shorter" band</td><td><code>TBD</code></td><td>Soumyadeep</td><td><span class="vp vp-red">🟥 define</span></td></tr>
+        <tr><td>Pickup primary window</td><td><code>14 / 30 day</code></td><td>Kyle</td><td><span class="vp vp-green">adopt</span></td></tr>
+        <tr><td>Confidence band cutoffs</td><td><code>TBD</code></td><td>—</td><td><span class="vp vp-red">🟥 define</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 5: OPEN DECISIONS ══════════════ -->
+<section id="decisions">
+  <div class="section-eyebrow">Section 5</div>
+  <h2>Open decisions summary</h2>
+  <p class="section-desc">For the team discussion — five blocking items, plus a known flaw to design around.</p>
+
+  <div style="border:1px solid var(--border2);border-radius:10px;padding:0 16px">
     <div class="assumption">
       <span class="assumption-num">1</span>
-      <span class="assumption-text"><code>match_quality</code> is exposed per comp member and is numeric. If categorical or absent, §3.3 collapses to comp-set-size only and the HIGH/MEDIUM split at size ≥ 5 loses its second gate.</span>
+      <span class="assumption-text">🟥 <strong>Does the Account Review core check pace-match future STLY?</strong> Blocking. Everything depends on it.</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">2</span>
-      <span class="assumption-text">Per-member historical baselines (R6) are reachable through MCP. <strong style="color:var(--amber)">Single largest schedule risk</strong> — gates Decision #2 entirely.</span>
+      <span class="assumption-text">🟥 <strong>Report Builder API access</strong> for arbitrary listing/window pulls (Revanth ↔ Anish).</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">3</span>
-      <span class="assumption-text"><code>−5pp</code> is the right softness threshold for a comp member against its own history. Judgment call, not a derived number — worth 10 minutes with an RM before locking.</span>
+      <span class="assumption-text">🟥 <strong>Comp dampening curve, booking-window band, confidence formula</strong> — numeric values to set.</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">4</span>
-      <span class="assumption-text"><code>SOFT_RATIO_TRIGGER = 0.60</code> on comp sets of 3–5 means 2–3 soft members flips the verdict. On a 3-listing comp set that's a coarse switch — consider requiring <code>comp_set_size ≥ 5</code> for the override to fire.</span>
+      <span class="assumption-text">🟥 <strong>Input surface / entity picker</strong> design (Shail ↔ front-end).</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">5</span>
-      <span class="assumption-text">Prior-year baselines are unreliable for listings with a channel or pricing-strategy change in the last 12 months. No flag for this in scope — stays a known limitation.</span>
+      <span class="assumption-text">🟥 <strong>Growth sense vs absolute sense (Soumyadeep).</strong> He described two underperformance senses: <em>not growing as fast as the market</em> (growth sense) and the <em>absolute</em> lag = <code>min(vs-STLY gap, vs-market gap)</code>. The core check (Stage 4) currently fires on the growth-relative <code>diff</code>; the absolute sense only appears in the no-STLY path. <strong>Decide:</strong> does the verdict trigger on growth-lag alone, or on <code>min(growth-lag, absolute-lag)</code>? This changes which listings get flagged.</span>
+    </div>
+    <div class="assumption">
+      <span class="assumption-num">6</span>
+      <span class="assumption-text"><strong>Known flaw to avoid:</strong> never emit a verdict off a single-level gap (e.g. "52% vs 68%"). That gap is only meaningful <em>after</em> Stages 4–7 — it could be strategy, a like-to-like artifact, or a real problem.</span>
     </div>
   </div>
+</section>
 
+<hr>
+
+<!-- ══════════════ SECTION 6: CASE STUDIES ══════════════ -->
+<section id="cases">
+  <div class="section-eyebrow">Section 6</div>
+  <h2>Worked case studies</h2>
+  <p class="section-desc">One question, ten data situations. Question throughout: <em>"Are my bookings slow for October — me or the market?"</em> Scope: single listing · window = October · KPI = occupancy · today ≈ 15–45 days out. All figures are invented to illustrate the logic path; occupancy is pace-matched (on-the-books-now vs same-lead-time LY).</p>
+
+  <h3>Quick-reference matrix</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Listing pace (ΔL)</th><th>Market pace (ΔM)</th><th>Base verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Up, but slower than market</td><td>Up</td><td><span class="vp vp-red">Me</span></td></tr>
+        <tr><td>Down ≈ same as market</td><td>Down</td><td><span class="vp vp-amber">Market</span></td></tr>
+        <tr><td>Down more than market</td><td>Down</td><td><span class="vp vp-purple">Mixed</span></td></tr>
+        <tr><td>Tracking STLY &amp; market</td><td>Flat/Up</td><td><span class="vp vp-green">No Slump</span></td></tr>
+        <tr><td>Up</td><td>Down</td><td><span class="vp vp-blue">Winning</span> (+ underpricing caution)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px">Overrides sit <em>on top</em> of the base verdict: a booking-window strategy pattern → On Strategy; healthy-but-late pickup → Late Not Lost; weak data → Inconclusive. Two guards can invert the obvious read entirely (cases I, J).</p>
+
+  <h3>Master data table</h3>
+  <p style="font-size:13px"><code>ΔL = L now − L STLY</code> · <code>ΔM = M now − M STLY</code> · <code>diff = ΔL − ΔM</code> (&lt; −5 Under, &gt; +5 Over, else At Par)</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Case</th><th>L now</th><th>L STLY</th><th>ΔL</th><th>M now</th><th>M STLY</th><th>ΔM</th><th>diff</th><th>Core check</th><th>Final verdict</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A</strong></td><td>48</td><td>44</td><td>+4</td><td>63</td><td>52</td><td>+11</td><td>−7</td><td>Under</td><td><span class="vp vp-red">Me</span></td></tr>
+        <tr><td><strong>B</strong></td><td>41</td><td>55</td><td>−14</td><td>46</td><td>60</td><td>−14</td><td>0</td><td>At Par</td><td><span class="vp vp-amber">Market</span></td></tr>
+        <tr><td><strong>C</strong></td><td>38</td><td>55</td><td>−17</td><td>48</td><td>54</td><td>−6</td><td>−11</td><td>Under</td><td><span class="vp vp-purple">Mixed</span></td></tr>
+        <tr><td><strong>D</strong></td><td>58</td><td>51</td><td>+7</td><td>60</td><td>56</td><td>+4</td><td>+3</td><td>At Par</td><td><span class="vp vp-green">No Slump</span></td></tr>
+        <tr><td><strong>E</strong></td><td>62</td><td>50</td><td>+12</td><td>45</td><td>48</td><td>−3</td><td>+15</td><td>Over</td><td><span class="vp vp-blue">Winning</span> ⚠ underpriced?</td></tr>
+        <tr><td><strong>F</strong></td><td>30</td><td>28</td><td>+2</td><td>55</td><td>44</td><td>+11</td><td>−9</td><td>Under</td><td><span class="vp vp-blue">On Strategy</span> (veto)</td></tr>
+        <tr><td><strong>G</strong></td><td>40</td><td>50</td><td>−10</td><td>58</td><td>56</td><td>+2</td><td>−12</td><td>Under</td><td><span class="vp vp-purple">Late Not Lost</span> (veto)</td></tr>
+        <tr><td><strong>H</strong></td><td>35</td><td>30</td><td>+5</td><td>50</td><td>44</td><td>+6</td><td>−1</td><td>At Par*</td><td><span class="vp vp-gray">Inconclusive</span> (weak data)</td></tr>
+        <tr><td><strong>I</strong></td><td>22</td><td>34</td><td>−12</td><td>40</td><td>38</td><td>+2</td><td>−14</td><td>Under</td><td><span class="vp vp-red">Me</span> — but <em>don't cut price</em> (guard)</td></tr>
+        <tr><td><strong>J</strong></td><td>78</td><td>60</td><td>+18</td><td>55</td><td>57</td><td>−2</td><td>+20</td><td>Over</td><td><span class="vp vp-gray">Not a clean win</span> (RevPAR guard)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px;color:var(--text3)">*H's core check is unreliable — comp set too small. See case note.</p>
+
+  <h3>Case notes</h3>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">A</span><span class="vp vp-red">Me</span><span class="cp cp-high">High confidence</span></div>
+    <p>MPI slips 85→76; booking window (25 vs mkt 30) unchanged from LY, so no strategy veto; ADR index 108 with MPI 76 = priced above comparable booked rates while under-occupied; min-stay 3 on a 2-night market. All signals agree.</p>
+    <div class="callout quote"><p>"This is mostly you — the market is up +11, you're up only +4, so you've slipped from 85% to 76% of market occupancy. Primary lever: price position; secondary: min-stay."</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">B</span><span class="vp vp-amber">Market</span><span class="cp cp-high">High confidence</span></div>
+    <p>diff = 0: you fell exactly as far as the market. MPI essentially flat (92→89). RevPAR &lt;95% STLY but so is the market's → §5.2 "market-wide decline" fires.</p>
+    <div class="callout quote"><p>"It's the market, not you — October demand is down ~14 pts across the board and your share held. Cutting price won't fix a market-wide dip; hold and re-check." This is the "wait it out" answer, and it's the one that stops a needless price war.</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">C</span><span class="vp vp-purple">Mixed</span><span class="cp cp-high">High confidence</span></div>
+    <p>Both down, but you're down 17 vs market's 6. Decomposition: market component = −6, self-inflicted = the 11 pts beyond that. MPI 102→79.</p>
+    <div class="callout quote"><p>"Mixed — the market softened 6 pts, but you're down 17; roughly 11 of those points are yours. Part wait-it-out, part fix."</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">D</span><span class="vp vp-green">No Slump</span></div>
+    <p>Exits at Stage 3. You're +7 vs STLY and tracking the market (MPI 91→97, share actually improved). Nothing is wrong.</p>
+    <div class="callout quote"><p>"No slump — you're pacing ahead of last year and holding your share. Nothing to fix here." Roughly a third of real tickets should land here; saying "you're fine" with proof is a feature, not a cop-out.</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">E</span><span class="vp vp-blue">Winning, with a caution</span></div>
+    <p>You're up 12 into a market that's down 3 → Over → Winning. But MPI 138 is very high and ADR index is 88 (below comps) → the overpricing/underpricing caution fires in reverse: you may be leaving money on the table.</p>
+    <div class="callout quote"><p>"You're beating a soft market — but MPI 138 with ADR index 88 suggests you're underpriced. Worth testing higher rates before assuming this is pure skill."</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">F</span><span class="vp vp-blue">On Strategy</span><span class="badge badge-gray">veto overrides "Me"</span></div>
+    <p>Raw math says Me (diff −9, market up). But booking window is 14 vs market 35, was 13 LY (same short pattern), and LY finished at target. This is the hold-high-liquidate-late strategy — Soumyadeep's fall-foliage case.</p>
+    <div class="callout quote"><p>"Looks like underperformance, but this matches your deliberate late-booking pattern — identical to last year, which finished full. Monitor, re-check by [date]. Don't cut price." Firing "Me" here would be the agent's most embarrassing mistake; the veto is what prevents it.</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">G</span><span class="vp vp-purple">Late Not Lost</span><span class="badge badge-gray">veto overrides "Me"</span></div>
+    <p>Raw math says Me (diff −12). But 14/30-day pickup is strong and rising, and the market's booking window has compressed vs LY (Kyle's "shrinking lead time = market trend"). Demand is arriving later, not vanishing.</p>
+    <div class="callout quote"><p>"On today's snapshot this reads as you, but your pickup is strong and the whole market is booking later this year. This is timing, not a lost-booking problem — hold, re-check in 14 days. If pickup stalls, it flips to Me."</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">H</span><span class="vp vp-gray">Inconclusive</span><span class="cp cp-low">Low confidence</span></div>
+    <p>Only 45 comps (&lt;120 floor) and it's a 6BR diluted by 2–4BR comps → market read unreliable, so <code>diff</code> can't be trusted.</p>
+    <div class="callout quote"><p>"Signal's too weak to call cleanly — the comp set is only 45 listings and skewed to smaller units, so the market comparison isn't reliable for a 6BR. Best available: you're pacing +5 vs last year. Re-check in 14 days as more October bookings land." Refusing to fake a verdict is the honest move.</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">I</span><span class="vp vp-red">Me</span><span class="badge badge-gray">guard: priced-out masquerading as low ADR</span></div>
+    <p>Occ is down (−12) <em>and</em> realized ADR is already below its own STLY — so the reflex "drop price" looks justified and is wrong. Booking-window collapse reveals what happened: asking prices went so high that bookings stopped; the few that landed were cheap days, dragging realized ADR down. Verdict is Me, but the mechanism is over-pricing earlier in the window (far-out premium / high percentile), not under-pricing now.</p>
+    <div class="callout quote"><p>"This is you — but the fix is not another price cut. Your rates ran high enough earlier that demand dried up; the low ADR you see is just a couple of discounted days. Review the far-out pricing, don't discount further."</p></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-head"><span class="case-letter">J</span><span class="vp vp-gray">Guard: RevPAR-negative "win"</span></div>
+    <p>Occ is up 18 into a flat/down market → Over → looks like a clean Winning. But RevPAR is &lt;95% of STLY because ADR was slashed (aggressive LOS discounts). The win-that-isn't guard fires.</p>
+    <div class="callout quote"><p>"Occupancy looks great, but you bought it with rate — RevPAR is down vs last year, so this isn't the win it appears to be. Check your LOS discounting before celebrating the occupancy." This is why RevPAR sits as a guardrail on every verdict, even when occupancy is the chosen KPI.</p></div>
+  </div>
+
+  <div class="callout info" style="margin-top:24px">
+    <div class="callout-title">What the ten cases prove</div>
+    <p>The same pipeline, fed only different numbers, produces "it's you," "it's the market," "you're fine," "don't cut price," and "that's not really a win" — each with a confidence level and a reason. Three cases (F, G, I) would be <strong>called wrong by any tool that reads the occupancy numbers alone</strong> — the veto and guards are the difference between a real RM verdict and a naive one. That contrast is the demo.</p>
+  </div>
+
+  <p style="font-size:12px;color:var(--text3);margin-top:24px">Verdict states recap: <code>No Slump</code> · <code>Market</code> · <code>Mixed</code> · <code>Me</code> · <code>Winning</code>, with overrides <code>On Strategy</code> / <code>Late Not Lost</code> and abort <code>Inconclusive</code>. Rules compute; LLM narrates; output is customer-safe.</p>
 </section>
 
 </div><!-- /page -->
