@@ -277,21 +277,25 @@
 <nav>
   <div class="nav-logo">PriceLabs <span>RM Agent</span></div>
   <a href="#principles" class="active">Principles</a>
+  <a href="#sources">Sources</a>
   <a href="#pipeline">Pipeline</a>
+  <a href="#states">States</a>
   <a href="#stages">Stages</a>
   <a href="#thresholds">Thresholds</a>
+  <a href="#card">Response card</a>
   <a href="#decisions">Open decisions</a>
   <a href="#cases">Case studies</a>
+  <a href="#team">Team</a>
 </nav>
 
 <div class="hero">
-  <div class="hero-tag">Hackathon 2026 · Verdict Logic Spec v2.0</div>
+  <div class="hero-tag">Hackathon 2026 · Verdict Logic Spec v2.1 — Context Handoff Brief</div>
   <h1>Is this me,<br>or the market?</h1>
   <p class="hero-sub">Given a booking slump, return a deterministic verdict — is it a <em>listing</em> problem or a <em>market</em> problem — with a confidence score on the verdict line, plus the evidence and (light) next steps.</p>
   <div class="meta-row">
     <span class="badge badge-blue">Agent: RM AI Agent</span>
     <span class="badge badge-amber">Status: Draft for team discussion</span>
-    <span class="badge badge-red">5 blocking decisions 🟥</span>
+    <span class="badge badge-red">6 blocking decisions 🟥</span>
   </div>
 </div>
 
@@ -334,9 +338,38 @@
 
 <hr>
 
-<!-- ══════════════ SECTION 2: PIPELINE ══════════════ -->
-<section id="pipeline">
+<!-- ══════════════ SECTION 2: SOURCES ══════════════ -->
+<section id="sources">
   <div class="section-eyebrow">Section 2</div>
+  <h2>Where the logic came from</h2>
+  <p class="section-desc">Four sources, and they converge on the same picture.</p>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">Soumyadeep (RM) — the verdict math</h3>
+    <p>Four numbers — occ, occ-STLY, market-occ, market-occ-STLY. Two senses of underperformance: <em>growth</em> (not growing as fast as market) and <em>absolute</em>. Market context is everything (is the market up or down?). Flagged the traps: fall-foliage strategy listings, phantom occupancy (blocks read as occ in ski markets), priced-out-masquerading-as-low-ADR, RevPAR-negative "wins," like-to-like, large-unit comp dilution, weekday/weekend split.</p>
+  </div>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">Kyle (SC) — the diagnostic order</h3>
+    <p>Visibility (sync, alerts, min-stay) <em>supersedes</em> pricing — check it first. Booking window + pickup (7/14/30-day; 7-day is noise). "Me" tells: far-out 61+ premium missing early bookings, misconfigured customizations, luxury tag on a standard unit. "Market" tells: market pacing behind, low pickup market-wide, cancelled events. Fix via DSO, not base-price moves.</p>
+  </div>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">Joaquin (SC) — the index math at scale</h3>
+    <p>Segment/leaderboard pacing, MPI (occ vs market ×100), ADR index, RevPAR index. Reads MPI + ADR index together, judged against property tier. Notably does <strong>not</strong> use the Account Review helper for this question.</p>
+  </div>
+
+  <div class="stage-block">
+    <h3 style="margin-top:0">Account Review Helper — the shipped classifier</h3>
+    <p>The classifier primitive with fixed, eval-stable thresholds. We adopt it verbatim as the core check and wrap it — we do not rebuild it.</p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 3: PIPELINE ══════════════ -->
+<section id="pipeline">
+  <div class="section-eyebrow">Section 3</div>
   <h2>Relationship to the Account Review Helper &amp; the pipeline</h2>
   <p class="section-desc">The shipped Account Review logic is our verdict <em>primitive</em>. We adopt its core check and thresholds verbatim. We do not rebuild it — the agent is the pace-matching layer before it and the RM judgment layer after it.</p>
 
@@ -346,26 +379,57 @@
   </div>
 
   <h3>The pipeline</h3>
-  <pre><code>0.  Resolve scope        (entity, stay-window, KPI)
-1.  Pull data spine      (pace-matched 4-number block + signals)   ← we pace-match here
-2.  Validity gates       (set confidence multipliers; abort thin windows)
-3.  Validate the claim   (core check) → maybe "No Slump", stop
-4.  Core check           (Account Review thresholds, verbatim) → Under / At Par / Over
-5.  Market overlay       → Me / Market / Mixed / Winning
-6.  RevPAR overlay       (Account Review §5) → catch market-wide decline &amp; the win-that-isn't
-7.  Booking-window veto  → On Strategy / Late Not Lost          ← not in the helper
-8.  Mechanism decompose  (only if a "me" component) — Kyle order  ← not in the helper
-9.  Segment              (weekday/weekend, per sub-window, events)
-10. Confidence score     (graduated, deterministic)             ← not in the helper
-11. Narrate              (LLM → customer-safe output contract)</code></pre>
+  <pre><code>0.  Resolve scope       (entity, window, KPI — default occ, ask)
+1.  Pull data spine     (pace-matched 4 numbers + signals)   ← we pace-match here
+2.  Validity gates      (comp size, like-to-like, phantom, sync, tier → set confidence / abort)
+3.  Validate the claim  (is it even slow? maybe "No Slump", stop — ~⅓ exit here)
+4.  Core check          (Account Review thresholds, verbatim → Under / At Par / Over)
+5.  Market overlay      (+ market direction → Me / Market / Mixed / Winning)
+6.  RevPAR overlay      (§5 On-Track logic → catch market-wide decline &amp; the win-that-isn't)
+7.  Booking-window veto (→ On Strategy / Late Not Lost)        ← not in helper
+8.  Mechanism decompose (only if "me": visibility→settings→price→conversion)  ← not in helper, STRETCH
+9.  Segment             (weekday/weekend, sub-windows, events)
+10. Confidence score    (graduated, deterministic)            ← not in helper
+11. Narrate             (LLM → customer-safe card)</code></pre>
   <p style="font-size:13px">Stages 4–6 are the helper running as-is. Stages 7, 8, 10 are the RM transcript logic. Stage 1 is where the two worldviews get reconciled.</p>
+  <div class="callout info">
+    <div class="callout-title">Stage 8 is the scope edge</div>
+    <p>It's diagnosis, not solution, so it's in — but treat it as enrichment. Drop it under time pressure and the agent is still complete on Stages 3–7 + 10.</p>
+  </div>
 </section>
 
 <hr>
 
-<!-- ══════════════ SECTION 3: STAGES ══════════════ -->
+<!-- ══════════════ SECTION 4: VERDICT STATES ══════════════ -->
+<section id="states">
+  <div class="section-eyebrow">Section 4</div>
+  <h2>Verdict states</h2>
+  <p class="section-desc">Eight states, not two — five base verdicts plus two overrides and one abort.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>State</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="vp vp-green">No Slump</span></td><td>Pacing at/above own STLY and market — nothing wrong. Return proof, stop.</td></tr>
+        <tr><td><span class="vp vp-amber">Market</span></td><td>You fell ≈ as far as the market — not your fault. The "wait it out" answer.</td></tr>
+        <tr><td><span class="vp vp-purple">Mixed</span></td><td>Both down, you worse. Report split: market component vs self-inflicted component.</td></tr>
+        <tr><td><span class="vp vp-red">Me</span></td><td>Market held/rose, you fell. Listing-side gap.</td></tr>
+        <tr><td><span class="vp vp-blue">Winning</span></td><td>You up, market down. Run underpricing caution (MPI ≫100 + low ADR index).</td></tr>
+        <tr><td><span class="vp vp-blue">On Strategy</span> <em>(override)</em></td><td>Looks like "Me" but it's a deliberate hold-high-liquidate-late pattern (short booking window, same as LY, LY hit target). Don't cut price.</td></tr>
+        <tr><td><span class="vp vp-purple">Late Not Lost</span> <em>(override)</em></td><td>Looks like "Me" but pickup is healthy and demand is arriving later (window compressed). Timing, not loss.</td></tr>
+        <tr><td><span class="vp vp-gray">Inconclusive</span> <em>(abort)</em></td><td>Data too weak to call (thin comps, dilution). Say so honestly.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size:13px">Core check → state mapping: <code>At Par + market up = No Slump</code> · <code>At Par + market down = Market</code> · <code>Under + market flat/up = Me</code> · <code>Under + market down = Mixed</code> · <code>Over = Winning</code>. Then apply overrides/guards on top.</p>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 5: STAGES ══════════════ -->
 <section id="stages">
-  <div class="section-eyebrow">Section 3</div>
+  <div class="section-eyebrow">Section 5</div>
   <h2>Stage-by-stage logic</h2>
   <p class="section-desc">Every stage of the pipeline, in order — scope resolution through the customer-safe output contract.</p>
 
@@ -545,7 +609,7 @@ else                                                         → At Par</code></
 
 <!-- ══════════════ SECTION 4: THRESHOLDS ══════════════ -->
 <section id="thresholds">
-  <div class="section-eyebrow">Section 4</div>
+  <div class="section-eyebrow">Section 6</div>
   <h2>Threshold config block (single source of truth)</h2>
   <p class="section-desc">Every tunable value in one place, with its source and confirmation status.</p>
 
@@ -573,36 +637,63 @@ else                                                         → At Par</code></
 
 <hr>
 
-<!-- ══════════════ SECTION 5: OPEN DECISIONS ══════════════ -->
+<!-- ══════════════ SECTION 7: RESPONSE CARD ══════════════ -->
+<section id="card">
+  <div class="section-eyebrow">Section 7</div>
+  <h2>Latest open thread — the response-card contract</h2>
+  <p class="section-desc">Three target output cards (verdict → 2–3 evidence sentences → one tool pointer → confidence + comp footer) revealed the <strong>evidence layer</strong> needs things the pipeline doesn't yet specify. None of this is a solution engine.</p>
+
+  <ol class="plain">
+    <li><strong>Comparison basis — biggest open question.</strong> The cards compare against a <strong>5-listing comp set</strong> and call that HIGH confidence, but the spec's 120-floor is for <strong>market/neighborhood data</strong>. These are two different bases with <em>opposite</em> confidence models (5 well-matched comps = high; for market data you want 120+). Must decide which is primary (likely: pricing-recommendation comp set as headline, market data as fallback) and write <em>two</em> confidence threshold sets.</li>
+    <li><strong>Per-comp distribution</strong> ("3 of 5 comps ≥65%") — a per-listing count, not the aggregate. 🟥 Confirm PL MCP exposes per-comp forward pacing, not just comp-set average. This is the linchpin — without it, card 1 collapses to a bare level gap, which violates our own rule.</li>
+    <li><strong>Per-comp vs own history</strong> ("4 of 5 below their own October avg") — needs each comp's baseline. Same availability check.</li>
+    <li><strong>Match-quality label</strong> ("well-matched") — surface the internal tier-representativeness gate as a customer-facing label.</li>
+    <li><strong>"Normal variance" band</strong> — present the ±5pp threshold in customer language.</li>
+    <li><strong>Card contract</strong> — make the compact card the default; keep the full evidence table as expandable "show the numbers."</li>
+  </ol>
+
+  <div class="callout warn">
+    <div class="callout-title">Consistency rule to hold</div>
+    <p>The level gap (52% vs 68%) is <em>presentation</em>; the distribution + ADR index is the <em>evidence</em>. Never emit a verdict from a bare level gap.</p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 8: OPEN DECISIONS ══════════════ -->
 <section id="decisions">
-  <div class="section-eyebrow">Section 5</div>
+  <div class="section-eyebrow">Section 8</div>
   <h2>Open decisions summary</h2>
-  <p class="section-desc">For the team discussion — five blocking items, plus a known flaw to design around.</p>
+  <p class="section-desc">Walk into any working session wanting these closed.</p>
 
   <div style="border:1px solid var(--border2);border-radius:10px;padding:0 16px">
     <div class="assumption">
       <span class="assumption-num">1</span>
-      <span class="assumption-text">🟥 <strong>Does the Account Review core check pace-match future STLY?</strong> Blocking. Everything depends on it.</span>
+      <span class="assumption-text">🟥 <strong>Does the Account Review core check pace-match future STLY, or use final realized STLY?</strong> Everything depends on it. (Revanth ↔ Anish)</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">2</span>
-      <span class="assumption-text">🟥 <strong>Report Builder API access</strong> for arbitrary listing/window pulls (Revanth ↔ Anish).</span>
+      <span class="assumption-text">🟥 <strong>Report Builder API access</strong> for arbitrary listing/window pulls, vs only pre-built templates. (Revanth ↔ Anish)</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">3</span>
-      <span class="assumption-text">🟥 <strong>Comp dampening curve, booking-window band, confidence formula</strong> — numeric values to set.</span>
+      <span class="assumption-text">🟥 <strong>Comparison basis:</strong> curated comp set vs market data as primary — sets the confidence model. (§7.1)</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">4</span>
-      <span class="assumption-text">🟥 <strong>Input surface / entity picker</strong> design (Shail ↔ front-end).</span>
+      <span class="assumption-text">🟥 <strong>Per-comp data availability</strong> — does MCP expose per-listing forward pacing + per-listing history? (§7.2/7.3)</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">5</span>
-      <span class="assumption-text">🟥 <strong>Growth sense vs absolute sense (Soumyadeep).</strong> He described two underperformance senses: <em>not growing as fast as the market</em> (growth sense) and the <em>absolute</em> lag = <code>min(vs-STLY gap, vs-market gap)</code>. The core check (Stage 4) currently fires on the growth-relative <code>diff</code>; the absolute sense only appears in the no-STLY path. <strong>Decide:</strong> does the verdict trigger on growth-lag alone, or on <code>min(growth-lag, absolute-lag)</code>? This changes which listings get flagged.</span>
+      <span class="assumption-text">🟥 <strong>Growth-sense vs absolute-sense:</strong> does the verdict fire on growth-lag alone, or <code>min(growth-lag, absolute-lag)</code>? Changes which listings flag.</span>
     </div>
     <div class="assumption">
       <span class="assumption-num">6</span>
-      <span class="assumption-text"><strong>Known flaw to avoid:</strong> never emit a verdict off a single-level gap (e.g. "52% vs 68%"). That gap is only meaningful <em>after</em> Stages 4–7 — it could be strategy, a like-to-like artifact, or a real problem.</span>
+      <span class="assumption-text">🟥 <strong>Numeric values still to set:</strong> comp dampening curve &lt;120, booking-window band, confidence formula.</span>
+    </div>
+    <div class="assumption">
+      <span class="assumption-num">7</span>
+      <span class="assumption-text"><strong>Stage 8 (mechanism) in-scope or stretch</strong> for the hackathon.</span>
     </div>
   </div>
 </section>
@@ -611,7 +702,7 @@ else                                                         → At Par</code></
 
 <!-- ══════════════ SECTION 6: CASE STUDIES ══════════════ -->
 <section id="cases">
-  <div class="section-eyebrow">Section 6</div>
+  <div class="section-eyebrow">Section 9</div>
   <h2>Worked case studies</h2>
   <p class="section-desc">One question, ten data situations. Question throughout: <em>"Are my bookings slow for October — me or the market?"</em> Scope: single listing · window = October · KPI = occupancy · today ≈ 15–45 days out. All figures are invented to illustrate the logic path; occupancy is pace-matched (on-the-books-now vs same-lead-time LY).</p>
 
@@ -719,6 +810,36 @@ else                                                         → At Par</code></
   </div>
 
   <p style="font-size:12px;color:var(--text3);margin-top:24px">Verdict states recap: <code>No Slump</code> · <code>Market</code> · <code>Mixed</code> · <code>Me</code> · <code>Winning</code>, with overrides <code>On Strategy</code> / <code>Late Not Lost</code> and abort <code>Inconclusive</code>. Rules compute; LLM narrates; output is customer-safe.</p>
+</section>
+
+<hr>
+
+<!-- ══════════════ SECTION 10: TEAM ══════════════ -->
+<section id="team">
+  <div class="section-eyebrow">Section 10</div>
+  <h2>Team &amp; logistics</h2>
+  <p class="section-desc">Hackathon: build Sept 15–17, present Sept 18, results Sept 21.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Who</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td>Shail</td><td>Lead / PM</td></tr>
+        <tr><td>Revanth</td><td>Data / build (+ Anish for API access)</td></tr>
+        <tr><td>Soniya</td><td>Data / mapping</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Related project</div>
+    <p>Atharva's project is similar but includes solutions in scope — ours is tighter, which is an advantage for delivering in the window.</p>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">Immediate next build step</div>
+    <p>Verdict/confidence pseudocode for Stages 3–7 + 10 (Stage 8 held until its scope is decided), plus an eval fixture set built from the ten worked cases (§9) to satisfy the reproducibility bar.</p>
+  </div>
 </section>
 
 </div><!-- /page -->
