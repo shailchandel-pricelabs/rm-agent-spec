@@ -260,20 +260,20 @@
   }
   .case-card p { font-size: 13.5px; margin-bottom: 8px; }
   .case-card .callout.quote { margin: 10px 0 0; }
+  .metric-row { display: flex; flex-wrap: wrap; gap: 7px; margin: 2px 0 12px; }
+  .metric-chip {
+    font-family: var(--mono); font-size: 11px; color: var(--text2);
+    background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px;
+    padding: 4px 9px; white-space: nowrap;
+  }
+  .metric-chip b { color: var(--text); font-weight: 600; }
+  .metric-chip.trigger { border-color: rgba(51,99,214,0.35); color: var(--accent); }
+  .metric-chip.trigger b { color: var(--accent); }
 
   /* ── PLAIN-READ TABLE HELPERS ── */
   .trend-up { color: var(--green); font-weight: 600; }
   .trend-down { color: var(--red); font-weight: 600; }
   .read-col { color: var(--text); font-size: 12.5px; }
-
-  /* ── QUESTION LIST ── */
-  .question-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
-  .question-item {
-    background: var(--bg2); border: 1px solid var(--border2); border-left: 3px solid var(--accent);
-    border-radius: 8px; padding: 12px 16px;
-  }
-  .question-item p { margin: 0; font-size: 13.5px; color: var(--text); }
-  .question-item .q-why { color: var(--text2); font-size: 12.5px; margin-top: 4px; }
 
   /* ── NAV LOGO / SCROLLBAR ── */
   ol.rules { padding-left: 20px; }
@@ -299,7 +299,6 @@
   <a href="#card">Response card</a>
   <a href="#decisions">Open decisions</a>
   <a href="#cases">Case studies</a>
-  <a href="#dsq">DS questions</a>
 </nav>
 
 <div class="hero">
@@ -789,61 +788,122 @@ else                                                         → At Par</code></
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">A</span><span class="vp vp-red">Me</span><span class="cp cp-high">High confidence</span></div>
-    <p>MPI slips 85→76; booking window (25 vs mkt 30) unchanged from LY, so no strategy veto; ADR index 108 with MPI 76 = priced above comparable booked rates while under-occupied; min-stay 3 on a 2-night market. All signals agree.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>−7pp</b> (Under)</span>
+      <span class="metric-chip">ΔL <b>+4</b> · ΔM <b>+11</b></span>
+      <span class="metric-chip">MPI <b>85→76</b></span>
+      <span class="metric-chip">ADR index <b>108</b></span>
+      <span class="metric-chip">Booking window <b>25</b> vs mkt <b>30</b> (unchanged vs LY)</span>
+      <span class="metric-chip">Min-stay <b>3</b> on 2-night market</span>
+    </div>
+    <p>Core check fires Under (Stage 4); market is up so the overlay lands on Me (Stage 5). Booking window is unchanged from LY, so the Stage 7 veto doesn't fire. ADR index 108 + MPI 76 = priced above comparable booked rates while under-occupied — mechanism decomposition (Stage 8) points to price position, then min-stay. All four signals (core check, MPI, ADR index, booking-window stability) agree, so confidence is High.</p>
     <div class="callout quote"><p>"This is mostly you — the market is up +11, you're up only +4, so you've slipped from 85% to 76% of market occupancy. Primary lever: price position; secondary: min-stay."</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">B</span><span class="vp vp-amber">Market</span><span class="cp cp-high">High confidence</span></div>
-    <p>diff = 0: you fell exactly as far as the market. MPI essentially flat (92→89). RevPAR &lt;95% STLY but so is the market's → §5.2 "market-wide decline" fires.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>0pp</b> (At Par)</span>
+      <span class="metric-chip">ΔL <b>−14</b> · ΔM <b>−14</b></span>
+      <span class="metric-chip">MPI <b>92→89</b></span>
+      <span class="metric-chip">RevPAR &lt;95% STLY (listing <em>and</em> market)</span>
+    </div>
+    <p>Core check lands At Par (diff = 0 pp exactly — Stage 4); market direction is down, so the overlay is Market (Stage 5). The Stage 6 RevPAR overlay confirms it: RevPAR is below the 95%-of-STLY floor for the listing, but the market's RevPAR is down too, which is what §5.2 "market-wide decline" checks for — this rules out a listing-side RevPAR problem. MPI barely moved (92→89), so share held. High confidence: core check, RevPAR overlay, and MPI all agree.</p>
     <div class="callout quote"><p>"It's the market, not you — October demand is down ~14 pts across the board and your share held. Cutting price won't fix a market-wide dip; hold and re-check." This is the "wait it out" answer, and it's the one that stops a needless price war.</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">C</span><span class="vp vp-purple">Mixed</span><span class="cp cp-high">High confidence</span></div>
-    <p>Both down, but you're down 17 vs market's 6. Decomposition: market component = −6, self-inflicted = the 11 pts beyond that. MPI 102→79.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>−11pp</b> (Under)</span>
+      <span class="metric-chip">ΔL <b>−17</b> · ΔM <b>−6</b></span>
+      <span class="metric-chip">MPI <b>102→79</b></span>
+      <span class="metric-chip">Market component <b>−6pp</b> · Self-inflicted <b>−11pp</b></span>
+    </div>
+    <p>Core check is Under; market is also down, so the overlay lands on Mixed (Stage 5). The decomposition splits <code>diff</code> into the market's own move (−6pp, not your fault) and the self-inflicted remainder (−11pp, the part beyond what the market explains). MPI falling from 102 to 79 — crossing from above-market to meaningfully below — corroborates a real listing-side slide, not noise.</p>
     <div class="callout quote"><p>"Mixed — the market softened 6 pts, but you're down 17; roughly 11 of those points are yours. Part wait-it-out, part fix."</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">D</span><span class="vp vp-green">No Slump</span></div>
-    <p>Exits at Stage 3. You're +7 vs STLY and tracking the market (MPI 91→97, share actually improved). Nothing is wrong.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>+3pp</b> (At Par)</span>
+      <span class="metric-chip">ΔL <b>+7</b> · ΔM <b>+4</b></span>
+      <span class="metric-chip">MPI <b>91→97</b></span>
+    </div>
+    <p>Core check lands At Par and the market is up, so Stage 5's overlay exits immediately at <strong>Stage 3</strong> — before the RevPAR/veto/mechanism stages even run. MPI rising from 91 to 97 confirms share is improving, not just holding. This is the "no work to do" branch by design — the claim ("I'm slow") is tested and rejected on the numbers alone.</p>
     <div class="callout quote"><p>"No slump — you're pacing ahead of last year and holding your share. Nothing to fix here." Roughly a third of real tickets should land here; saying "you're fine" with proof is a feature, not a cop-out.</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">E</span><span class="vp vp-blue">Winning, with a caution</span></div>
-    <p>You're up 12 into a market that's down 3 → Over → Winning. But MPI 138 is very high and ADR index is 88 (below comps) → the overpricing/underpricing caution fires in reverse: you may be leaving money on the table.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>+15pp</b> (Over)</span>
+      <span class="metric-chip">ΔL <b>+12</b> · ΔM <b>−3</b></span>
+      <span class="metric-chip">MPI <b>138</b></span>
+      <span class="metric-chip">ADR index <b>88</b></span>
+    </div>
+    <p>Core check is Over → base verdict is Winning (Stage 5). But Stage 8's overperformance check reads MPI and ADR index <em>together</em>: MPI 138 (well above 100) paired with ADR index 88 (booked rates below comps) is the specific signature of underpricing, not skill — the caution fires precisely because both numbers point the same direction.</p>
     <div class="callout quote"><p>"You're beating a soft market — but MPI 138 with ADR index 88 suggests you're underpriced. Worth testing higher rates before assuming this is pure skill."</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">F</span><span class="vp vp-blue">On Strategy</span><span class="badge badge-gray">veto overrides "Me"</span></div>
-    <p>Raw math says Me (diff −9, market up). But booking window is 14 vs market 35, was 13 LY (same short pattern), and LY finished at target. This is the hold-high-liquidate-late strategy — Soumyadeep's fall-foliage case.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>−9pp</b> (Under → raw "Me")</span>
+      <span class="metric-chip">ΔL <b>+2</b> · ΔM <b>+11</b></span>
+      <span class="metric-chip">Booking window <b>14</b> vs mkt <b>35</b> (LY: <b>13</b>, same pattern)</span>
+      <span class="metric-chip">LY final occupancy: hit target</span>
+    </div>
+    <p>The core check alone says Me (diff −9pp, market rising). The Stage 7 veto is what overrides it: booking window is 14 days vs the market's 35 — but it was 13 days LY too (an established pattern, not new), and that LY pattern finished at target occupancy. All three veto conditions are met, so Me downgrades to On Strategy.</p>
     <div class="callout quote"><p>"Looks like underperformance, but this matches your deliberate late-booking pattern — identical to last year, which finished full. Monitor, re-check by [date]. Don't cut price." Firing "Me" here would be the agent's most embarrassing mistake; the veto is what prevents it.</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">G</span><span class="vp vp-purple">Late Not Lost</span><span class="badge badge-gray">veto overrides "Me"</span></div>
-    <p>Raw math says Me (diff −12). But 14/30-day pickup is strong and rising, and the market's booking window has compressed vs LY (Kyle's "shrinking lead time = market trend"). Demand is arriving later, not vanishing.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>−12pp</b> (Under → raw "Me")</span>
+      <span class="metric-chip">ΔL <b>−10</b> · ΔM <b>+2</b></span>
+      <span class="metric-chip">14/30-day pickup: strong, rising</span>
+      <span class="metric-chip">Market booking window: compressed vs LY</span>
+    </div>
+    <p>Core check again says Me (diff −12pp). But the Stage 7 pickup cross-check catches it: pickup is strong and rising, and the whole market's booking window has compressed vs LY — a market-wide shift to later bookings, not a listing-specific drop-off. That combination routes to Late Not Lost instead of Me.</p>
     <div class="callout quote"><p>"On today's snapshot this reads as you, but your pickup is strong and the whole market is booking later this year. This is timing, not a lost-booking problem — hold, re-check in 14 days. If pickup stalls, it flips to Me."</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">H</span><span class="vp vp-gray">Inconclusive</span><span class="cp cp-low">Low confidence</span></div>
-    <p>Only 45 comps (&lt;120 floor) and it's a 6BR diluted by 2–4BR comps → market read unreliable, so <code>diff</code> can't be trusted.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>−1pp</b> (At Par — untrusted)</span>
+      <span class="metric-chip">ΔL <b>+5</b> · ΔM <b>+6</b></span>
+      <span class="metric-chip">Comp count <b>45</b> (floor: 120)</span>
+      <span class="metric-chip">6BR listing, comps skew 2–4BR</span>
+    </div>
+    <p>The raw core check reads At Par, but Stage 2's validity gates catch two problems before that number is trusted: comp count is 45, well under the 120 floor, and the comp set is diluted by smaller units against a 6BR listing. Both gates fire, so confidence bottoms out at Low regardless of what <code>diff</code> says — the agent reports the listing's own pace (+5 vs LY) as the only number it will stand behind.</p>
     <div class="callout quote"><p>"Signal's too weak to call cleanly — the comp set is only 45 listings and skewed to smaller units, so the market comparison isn't reliable for a 6BR. Best available: you're pacing +5 vs last year. Re-check in 14 days as more October bookings land." Refusing to fake a verdict is the honest move.</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">I</span><span class="vp vp-red">Me</span><span class="badge badge-gray">guard: priced-out masquerading as low ADR</span></div>
-    <p>Occ is down (−12) <em>and</em> realized ADR is already below its own STLY — so the reflex "drop price" looks justified and is wrong. Booking-window collapse reveals what happened: asking prices went so high that bookings stopped; the few that landed were cheap days, dragging realized ADR down. Verdict is Me, but the mechanism is over-pricing earlier in the window (far-out premium / high percentile), not under-pricing now.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>−14pp</b> (Under)</span>
+      <span class="metric-chip">ΔL <b>−12</b> · ΔM <b>+2</b></span>
+      <span class="metric-chip">Realized ADR: below own STLY</span>
+      <span class="metric-chip">Booking window: collapsed</span>
+    </div>
+    <p>Core check says Me (diff −14pp, market flat/up). Realized ADR already sitting below its own STLY would normally point to under-pricing — the naive read is "drop price." But Stage 6's priced-out check looks at the booking-window collapse instead: asking prices ran high enough, early enough, that demand stopped booking; the handful of bookings that did land were the cheap leftover days, which is what's dragging the realized-ADR average down. Verdict stays Me, but the guard changes which lever fires.</p>
     <div class="callout quote"><p>"This is you — but the fix is not another price cut. Your rates ran high enough earlier that demand dried up; the low ADR you see is just a couple of discounted days. Review the far-out pricing, don't discount further."</p></div>
   </div>
 
   <div class="case-card">
     <div class="case-head"><span class="case-letter">J</span><span class="vp vp-gray">Guard: RevPAR-negative "win"</span></div>
-    <p>Occ is up 18 into a flat/down market → Over → looks like a clean Winning. But RevPAR is &lt;95% of STLY because ADR was slashed (aggressive LOS discounts). The win-that-isn't guard fires.</p>
+    <div class="metric-row">
+      <span class="metric-chip trigger">diff <b>+20pp</b> (Over → raw "Winning")</span>
+      <span class="metric-chip">ΔL <b>+18</b> · ΔM <b>−2</b></span>
+      <span class="metric-chip">RevPAR &lt;95% STLY</span>
+      <span class="metric-chip">Driven by aggressive LOS discounting</span>
+    </div>
+    <p>Core check is Over into a flat/down market — by the base mapping alone this is Winning. The Stage 6 RevPAR overlay is what stops it from being reported that way: RevPAR sits below the 95%-of-STLY floor because ADR was cut via aggressive length-of-stay discounts. Occupancy went up, but revenue per available night went down — the "win-that-isn't" guard fires and the verdict is downgraded to a caution rather than a clean Winning.</p>
     <div class="callout quote"><p>"Occupancy looks great, but you bought it with rate — RevPAR is down vs last year, so this isn't the win it appears to be. Check your LOS discounting before celebrating the occupancy." This is why RevPAR sits as a guardrail on every verdict, even when occupancy is the chosen KPI.</p></div>
   </div>
 
@@ -853,38 +913,6 @@ else                                                         → At Par</code></
   </div>
 
   <p style="font-size:12px;color:var(--text3);margin-top:24px">Verdict states recap: <code>No Slump</code> · <code>Market</code> · <code>Mixed</code> · <code>Me</code> · <code>Winning</code>, with overrides <code>On Strategy</code> / <code>Late Not Lost</code> and abort <code>Inconclusive</code>. Rules compute; LLM narrates; output is customer-safe.</p>
-</section>
-
-<hr>
-
-<!-- ══════════════ SECTION 10: DS QUESTIONS ══════════════ -->
-<section id="dsq">
-  <div class="section-eyebrow">Section 10</div>
-  <h2>Questions for the Data Science team</h2>
-  <p class="section-desc">Every response format above assumes data that hasn't been confirmed to exist. Ask these <strong>before</strong> writing narration or threshold code — the answers change what a card can say, not just how it's phrased.</p>
-
-  <div class="question-list">
-    <div class="question-item">
-      <p>1. For a given listing's comp set, can we pull <strong>each comp's own forward pacing number</strong> individually (not just the comp-set average)?</p>
-      <p class="q-why">Why it matters: without this, we can't produce "3 of 5 comps are pacing above 65%" — the card falls back to a bare average, which is the weak evidence pattern we're trying to avoid.</p>
-    </div>
-    <div class="question-item">
-      <p>2. For each comp, can we pull <strong>its own historical (STLY) baseline</strong> — so we can compare each comp to its own past, not just to the group?</p>
-      <p class="q-why">Why it matters: this is what "4 of 5 comps are below their own October average" needs. Same data shape as Q1, different metric.</p>
-    </div>
-    <div class="question-item">
-      <p>3. Are the <strong>pricing-recommendation comp set</strong> (~5 hand-matched comps) and the <strong>market/neighborhood dataset</strong> (100s of listings) two separate, independently queryable objects — or is there only one comp-set concept in the data model?</p>
-      <p class="q-why">Why it matters: the spec has two different confidence floors (small-is-fine for pricing comps, ≥120 for market data). If there's only one object, we need to know which population it actually represents before setting either threshold.</p>
-    </div>
-    <div class="question-item">
-      <p>4. Is there a field that describes <strong>comp tier / unit-size representativeness</strong> (e.g. bedroom count, property type) per comp, so we can flag when the comp set skews to one tier?</p>
-      <p class="q-why">Why it matters: this becomes the customer-facing "well-matched" vs "loosely matched" label, and it's also what makes ADR-index comparisons trustworthy or not.</p>
-    </div>
-    <div class="question-item">
-      <p>5. Does the existing Account Review core check compare <strong>on-the-books-now vs same-lead-time-last-year</strong>, or vs <strong>final realized STLY</strong>?</p>
-      <p class="q-why">Why it matters: this is the pace-matching assumption everything else is built on. If the helper doesn't pace-match, we need to feed it pre-matched numbers ourselves before any threshold in this doc is trustworthy.</p>
-    </div>
-  </div>
 </section>
 
 </div><!-- /page -->
