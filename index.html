@@ -317,13 +317,9 @@
 <!-- ══════════════ SECTION 1: DESIGN PRINCIPLES ══════════════ -->
 <section id="principles">
   <div class="section-eyebrow">Section 1</div>
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px">
-    <h2 style="margin-bottom:0">Design principles</h2>
-    <button id="ai-toggle" type="button" style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(109,79,209,0.3);border-radius:20px;padding:5px 14px;cursor:pointer;white-space:nowrap">Courtesy of AI · Hide answers</button>
-  </div>
+  <h2>Design principles</h2>
   <p class="section-desc">Agree these first — everything downstream assumes them.</p>
 
-  <div id="ai-answers">
   <div class="principle-list">
     <div class="principle-card">
       <div class="principle-num">1</div>
@@ -346,7 +342,6 @@
       <p><strong>Diagnose, don't solve.</strong> Scope is the verdict + the <em>lever</em>, not a solution engine. We point at "relax min-stay here" / "DSO X% on this range," we don't build the fix.</p>
     </div>
   </div>
-  </div><!-- /ai-answers -->
 </section>
 
 <hr>
@@ -928,14 +923,6 @@ else                                                         → At Par</code></
     });
   }, { rootMargin: '-30% 0px -60% 0px' });
   sections.forEach(s => io.observe(s));
-
-  const aiToggle = document.getElementById('ai-toggle');
-  const aiAnswers = document.getElementById('ai-answers');
-  aiToggle.addEventListener('click', () => {
-    const hidden = aiAnswers.hidden;
-    aiAnswers.hidden = !hidden;
-    aiToggle.textContent = hidden ? 'Courtesy of AI · Hide answers' : 'Courtesy of AI · Show answers';
-  });
 </script>
 
 </body>
